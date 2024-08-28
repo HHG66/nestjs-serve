@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user';
 import { LoginService } from './user.service';
 import { Public } from 'src/common/decorators/isPublic.decorator';
 
-@Controller('admin')
+@Controller()
 export class LoginController {
   constructor(private readonly loginService: LoginService,
   ) { }
@@ -11,6 +11,7 @@ export class LoginController {
   @Post('login')
   @Public()
   async login(@Body() userInfo: CreateUserDto) {
+    console.log(userInfo);
     return this.loginService.login(userInfo)
   }
 
@@ -26,7 +27,6 @@ export class LoginController {
   @Post('test')
   test() {
     // throw new BadRequestException('Something bad happened', { cause: new Error(), description: 'Some error description' })
-
     return {
       code:1,
       test: [

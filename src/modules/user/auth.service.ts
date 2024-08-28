@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-23 17:39:11
- * @LastEditTime: 2024-08-23 17:41:47
+ * @LastEditTime: 2024-08-27 20:18:59
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\modules\user\auth.service.ts
  * @文件说明: 
@@ -26,12 +26,15 @@ export class AuthService {
     // console.log('JWT验证 - Step 2: 校验用户信息');
     const user = await this.loginServe.findOne(username);
     if (user) {
-      const Password = user.password;
+      // const Password = user.password;
       //明文密码
+      console.log("password",password);
+      console.log("user.password",user.password);
       if (compare(password, user.password)) {
         // 密码正确
         return {
           code: 1,
+          err:"handleSuccess",
           user,
         };
       } else {
@@ -39,6 +42,7 @@ export class AuthService {
         return {
           code: 2,
           user: null,
+          err:"wrongPassword",
         };
       }
     }
@@ -46,6 +50,7 @@ export class AuthService {
     return {
       code: 3,
       user: null,
+      err:"notFund",
     };
   }
 
@@ -55,18 +60,13 @@ export class AuthService {
     // console.log('JWT验证 - Step 3: 处理 jwt 签证');
     try {
       const token = this.jwtService.sign(payload);
-      return {
-        // code: '00000',
-        token,
-        message: `登录成功`,
-      };
+      return token
     } catch (error) {
+      console.log(error);
       return {
         code: '1',
-        message: `账号或密码错误`,
+        message: `登录失败`,
       };
     }
   }
-
-
 }

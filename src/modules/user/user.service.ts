@@ -1,5 +1,5 @@
 import { ForbiddenException, Inject, Injectable, forwardRef } from '@nestjs/common';
-import { UserDocument } from './schemas/user.schemas'
+import { UserDocument } from '@/entities/User.entities'
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user';
@@ -55,21 +55,24 @@ export class LoginService {
   }
   //登录
   async login(userInfo: CreateUserDto) {
+    const result = {
+      wrongPassword: () => ({ code: '1', message: `账号或密码不正确` }),
+      notFund: () => ({ code: '1', message: `账号未注册` }),
+      handleSuccess: async () => ({ token: await this.authService.certificate(authResult.user), userInfo: {name:authResult.user.username} }),
+    }
     const authResult = await this.authService.validateUser(userInfo.username, userInfo.password);
-    switch (authResult.code) {
-      case 1:
-        return this.authService.certificate(authResult.user);
-      case 2:
-        return {
-          code: '1',
-          message: `账号或密码不正确`,
-        };
-      default:
-        return {
-          code: '1',
-          message: `账号或密码不正确`,
-        };
+    const handler = result[authResult.err];
+    if (handler) {
+      return await handler(authResult)
+    } else {
+      return {
+        code: "1",
+        message: '未知错误'
+      }
     }
   }
 
+  // test(){
+
+  // }
 }

@@ -9,6 +9,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
+    snapshot: true,
   });
   const LoggerInstant = app.get(WINSTON_MODULE_PROVIDER) as Logger
   //全局管道
@@ -20,6 +21,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseInterceptor(LoggerInstant));
   //全局异常过滤器
   app.useGlobalFilters(new HttpExceptionFilter(LoggerInstant));
+  
   await app.listen(3000);
 }
 
