@@ -8,13 +8,13 @@ import 'winston-daily-rotate-file';
 import { ConfigModule } from '@nestjs/config';
 import database from './config/database.config';
 //配置文件相关
-import { ConfigService } from '@nestjs/config'
+import { ConfigService } from '@nestjs/config';
 import logconfig from './config/log.config';
-import jwtConfig from './config/jwt.config'
+import jwtConfig from './config/jwt.config';
 import { Modules } from '@/modules/modules';
-import { LoggingService } from "@/lifeCycle"
+import { LoggingService } from '@/lifeCycle';
 
-import { UserModule } from '@/modules/user/user.module';
+// import { UserModule } from '@/modules/user/user.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,8 +24,8 @@ import { UserModule } from '@/modules/user/user.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        let uri = configService.get<string>('MONGODB_URI')
-        return { uri }
+        const uri = configService.get<string>('MONGODB_URI');
+        return { uri };
       },
       inject: [ConfigService],
     }),
@@ -49,21 +49,21 @@ import { UserModule } from '@/modules/user/user.module';
               winston.format.json(),
             ),
           }),
-        ]
+        ],
       }),
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
-    Modules
+    Modules,
     // UserModule
-    // LoginModule, 
+    // LoginModule,
     // AuthModule,
     // ArticleModule,
     // ClassificationModule,
     // AtlasModule,
-    // MulterModule.register({  
-    //   storage: {  
-    //   },  
-    // }),  
+    // MulterModule.register({
+    //   storage: {
+    //   },
+    // }),
   ],
   controllers: [],
   //注册全局守卫
@@ -75,4 +75,4 @@ import { UserModule } from '@/modules/user/user.module';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}
