@@ -7,27 +7,27 @@ export type BillDocument = HydratedDocument<Bill>;
 @Schema()
 export class Bill {
   @Prop()
-  tradinghours: string;
+  tradinghours: string; //交易时间
   @Prop()
-  tradetype: string;
+  tradetype: string; //交易类型
   @Prop()
-  counterparty: string;
+  counterparty: string; //交易对方
   @Prop()
-  product: string;
+  product: string; //商品
   @Prop()
-  collectorbranch: string;
+  collectorbranch: string; //	收/支
   @Prop()
-  amount: string;
+  amount: string; //金额(元)
   @Prop()
-  patternpayment: string;
+  patternpayment: string; //支付方式
   @Prop()
-  currentstate: string;
+  currentstate: string; //当前状态
+  @Prop({ required: true, unique: true })
+  trasactionid: string; //交易单号
   @Prop()
-  trasactionid: string;
+  merchantstoorder: string; //商户单号
   @Prop()
-  merchantstoorder: string;
-  @Prop()
-  remark: string;
+  remark: string; //备注
   @Prop()
   updataDate: Date;
 }

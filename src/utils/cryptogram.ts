@@ -1,10 +1,10 @@
 /*
  * @Author: HHG
  * @Date: 2023-12-15 09:49:50
- * @LastEditTime: 2023-12-16 15:02:53
+ * @LastEditTime: 2024-11-18 11:39:06
  * @LastEditors: 韩宏广
- * @FilePath: \website\src\utils\cryptogram.ts
- * @文件说明: 
+ * @FilePath: \financial-serve\src\utils\cryptogram.ts
+ * @文件说明:
  */
 import * as bcrypt from 'bcrypt';
 
@@ -15,9 +15,9 @@ import * as bcrypt from 'bcrypt';
  * @return {string} 加密的数据
  * @author: 韩宏广
  */
-export const encryption = (str:string,salt?:string|number): string => {
-  return bcrypt.hashSync(str, salt||10);
-}
+export const encryption = (str: string, salt?: string | number): string => {
+  return bcrypt.hashSync(str, salt || 10);
+};
 /**
  * @description: 对比加密字符串和字符串是否是同一个
  * @param {string} str 需要比对的字符串
@@ -25,6 +25,6 @@ export const encryption = (str:string,salt?:string|number): string => {
  * @return {boolean} 对比结果
  * @author: 韩宏广
  */
-export const compare=(str:string,hashStr:string):boolean=>{
-  return bcrypt.compareSync(str,hashStr)
-}
+export const compare = (str: string, hashStr: string): boolean => {
+  return bcrypt.compareSync(str, hashStr);
+};

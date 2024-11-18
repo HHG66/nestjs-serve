@@ -4,7 +4,7 @@
  * @LastEditTime: 2024-08-26 09:21:06
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\modules\jwt.strategy.ts
- * @文件说明: 
+ * @文件说明:
  */
 /*
  * @Author: HHG
@@ -12,7 +12,7 @@
  * @LastEditTime: 2024-01-03 19:25:02
  * @LastEditors: 韩宏广
  * @FilePath: \website-nest\src\modules\auth\jwt.strategy.ts
- * @文件说明: 
+ * @文件说明:
  */
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
@@ -33,7 +33,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   // JWT验证 - Step 4: 被守卫调用
   async validate(payload: any) {
     // console.log(`JWT验证 - Step 4: 被守卫调用`);
-    return {  username: payload.username};
+    return { username: payload.username };
   }
 }
-

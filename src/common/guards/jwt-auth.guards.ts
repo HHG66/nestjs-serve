@@ -4,14 +4,13 @@
  * @LastEditTime: 2023-12-14 12:15:35
  * @LastEditors: 韩宏广
  * @FilePath: \website\src\common\guards\jwtAuth.guards.ts
- * @文件说明: 
+ * @文件说明:
  */
-import { ExecutionContext, Injectable } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import { AuthGuard } from "@nestjs/passport";
+import { ExecutionContext, Injectable } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
 import { SetMetadata } from '@nestjs/common';
-import { IS_PUBLIC_KEY } from '../decorators/isPublic.decorator'
-
+import { IS_PUBLIC_KEY } from '../decorators/isPublic.decorator';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -30,4 +29,3 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 }
-
