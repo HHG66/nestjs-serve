@@ -18,7 +18,7 @@ async function bootstrap() {
   //全局守卫
   // app.useGlobalGuards(JwtStrategy);
   //全局拦截器
-  app.useGlobalInterceptors(new ResponseInterceptor(LoggerInstant));
+  // app.useGlobalInterceptors(new ResponseInterceptor(LoggerInstant));
   //全局异常过滤器
   app.useGlobalFilters(new HttpExceptionFilter(LoggerInstant));
 

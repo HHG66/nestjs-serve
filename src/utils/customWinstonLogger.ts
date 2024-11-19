@@ -1,58 +1,76 @@
-// customWinstonLogger.ts
+// custom-winston-logger.ts
 import { Injectable } from '@nestjs/common';
-import { LoggerService } from '@nestjs/common';
 import * as winston from 'winston';
 
 @Injectable()
-export class CustomWinstonLogger implements LoggerService {
+export class CustomWinstonLogger {
   private readonly logger: winston.Logger;
 
   constructor() {
     this.logger = winston.createLogger({
-      level: 'info',
       transports: [
         new winston.transports.Console({
           format: winston.format.combine(
             winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-            winston.format.printf(({ timestamp, level, message, context, route, ...meta }) => {
-              // 使用传递的 route 信息，若没有则默认值为 'Unknown Route'
-              const routeInfo = route || "";
-              return `${timestamp} [${level}] ${routeInfo} - ${message}`;
-            }),
+            winston.format.printf(
+              ({ timestamp, level, message, context, ...meta }) => {
+                const route = meta.route || 'Unknown Route'; // 获取路由信息
+                return `${timestamp} [${level}] ${route} - ${message}`;
+              }
+            )
           ),
         }),
         new winston.transports.DailyRotateFile({
-          dirname: 'logs', // 目录可以通过配置获取
+          dirname: 'logs',
           filename: '%DATE%.log',
           datePattern: 'YYYY-MM-DD',
           maxFiles: '30d',
           format: winston.format.combine(
             winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-            winston.format.printf(({ timestamp, level, message, context, route, ...meta }) => {
-              const routeInfo = route || "";
+            winston.format.printf(({ timestamp, level, message, route, ...meta }) => {
+              const routeInfo = route || 'Unknown Route';
               return `${timestamp} [${level}] ${routeInfo} - ${message}`;
             }),
           ),
         }),
+        // new winston.transports.DailyRotateFile({
+        //   dirname: configService.get<string>('DIE_NAME'), // 日志保存的目录
+        //   filename: configService.get<string>('FILE_NAME'), // 日志名称，占位符 %DATE% 取值为 datePattern 值。
+        //   datePattern: configService.get<string>('DATE_PATTERN'), // 日志轮换的频率，此处表示每天。
+        //   zippedArchive: configService.get<boolean>('ZIPPEDARCHIVE'), // 是否通过压缩的方式归档被轮换的日志文件。
+        //   maxSize: configService.get<string>('MAXSIZE'), // 设置日志文件的最大大小，m 表示 mb 。
+        //   maxFiles: configService.get<string>('MAXFILES'), // maxFiles 用于限制保留的日志文件的数量，而不是天数
+        //   // 记录时添加时间戳信息
+        //   // format: winston.format.combine(
+        //   //   winston.format.timestamp({
+        //   //     format: configService.get<string>('FORMAT'),
+        //   //   }),
+        //   //   winston.format.json()
+        //   // ),
+        //   format: winston.format.combine(
+        //     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        //     winston.format.printf(({ timestamp, level, message, context, ...meta }) => {
+        //       // console.log( timestamp, level, message, context, meta);
+
+        //       const route = meta?.route || "";
+        //       return `${timestamp} [${level}] ${route} - ${message}`;
+        //     }),
+        //   ),
+
+        // }),
       ],
     });
   }
 
-  log(message: string | object) {
-    if (typeof message === 'object' && (message as any).route) {
-      // 如果是对象且包含 route，则提取并使用
-      this.logger.info(message['message'], { route: message['route'] });
-    } else {
-      // 如果是简单字符串，则直接记录
-      this.logger.info(message);
-    }
+  log(message: string, route: string): void {
+    this.logger.log('info', message, { route }); // 传递路由作为 meta
   }
 
-  error(message: string) {
-    this.logger.error(message);
+  error(message: string, route: string): void {
+    this.logger.log('error', message, { route });
   }
 
-  warn(message: string) {
-    this.logger.warn(message);
+  warn(message: string, route: string): void {
+    this.logger.log('warn', message, { route });
   }
 }

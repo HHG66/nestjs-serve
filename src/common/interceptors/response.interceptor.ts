@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2023-12-15 11:20:15
- * @LastEditTime: 2024-11-19 11:44:33
+ * @LastEditTime: 2024-11-19 20:12:27
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\common\interceptors\response.interceptor.ts
  * @文件说明:
@@ -17,7 +17,8 @@ import {
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Logger } from 'winston';
+// import { Logger } from 'winston';
+import { LoggingService } from '@/global/logger/logging.service';
 import { Request } from 'express';
 import { ResponseDto } from '@/utils/response';
 import { catchError } from 'rxjs/operators';
@@ -28,7 +29,7 @@ export interface Response<T> {
 
 @Injectable()
 export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
-  constructor(@Inject(WINSTON_MODULE_PROVIDER) private logger: Logger) {}
+  constructor(@Inject() private logger: LoggingService) {}
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     // console.log('service执行前');
     // const response = context.switchToHttp().getResponse()
@@ -41,6 +42,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
     return next.handle().pipe(
       map((data) => {
         // console.log(data);
+        this.logger.log(data.data)
         return new ResponseDto(
           data.data,
           data.code,

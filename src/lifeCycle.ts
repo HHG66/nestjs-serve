@@ -14,7 +14,7 @@ export class LifeCycle
 {
   // constructor(@Inject() private readonly logger: Logger) { }
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    // @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
   onModuleInit() {
     console.log(`项目初始化完成`);
@@ -25,6 +25,6 @@ export class LifeCycle
   }
 
   onApplicationBootstrap() {
-    this.logger.info('启动成功,端口3000');
+    // this.logger.info('启动成功,端口3000');
   }
 }

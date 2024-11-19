@@ -9,6 +9,7 @@ import { Logger } from 'winston';
 import { Inject } from '@nestjs/common';
 import { log } from 'console';
 import { ResponseDto } from '@/utils/response';
+import { LoggingService } from '@/global/logger/logging.service';
 // import { CustomWinstonLogger } from '@/utils/customWinstonLogger';
 @Injectable()
 export class BillService {
@@ -16,8 +17,11 @@ export class BillService {
     // private readonly logger: CustomWinstonLogger,
     @InjectModel('Bill')
     private billModel: Model<BillDocument>,
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
+    // @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     // @Inject(WINSTON_MODULE_PROVIDER) 
+    @Inject()
+    private readonly logger: LoggingService,  // 注入 LoggingService
+
   ) {}
   async uploadBill(data: CreateBillListDto) {
     // console.log(typeof data);
@@ -49,8 +53,6 @@ export class BillService {
         return ResponseDto.success({}, undefined, '上传成功');
       }
     } catch (error) {
-      // console.log(this.logger.log.toString(),"this.logger.log");
-      
       this.logger.error(
         // `共计${error.results.length}条账单的交易id重复,导入成功${bills.length - error.results.length}条`
          `共计${bills.length}条账单，成功导入${bills.length - error.results.length}条，重复数据${error.results.length}条`
