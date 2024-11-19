@@ -9,12 +9,15 @@ import { Logger } from 'winston';
 import { Inject } from '@nestjs/common';
 import { log } from 'console';
 import { ResponseDto } from '@/utils/response';
+// import { CustomWinstonLogger } from '@/utils/customWinstonLogger';
 @Injectable()
 export class BillService {
   constructor(
+    // private readonly logger: CustomWinstonLogger,
     @InjectModel('Bill')
     private billModel: Model<BillDocument>,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
+    // @Inject(WINSTON_MODULE_PROVIDER) 
   ) {}
   async uploadBill(data: CreateBillListDto) {
     // console.log(typeof data);
@@ -36,24 +39,27 @@ export class BillService {
       bill.updataDate = data.updataDate;
       return bill;
     });
-    console.log(bills.length);
     try {
-      const createResult = await this.billModel.create(bills);
-      console.log(createResult);
-
+      //ordered true遇到错误立即报错，false 跳过当条处理完毕后报错
+      const createResult = await this.billModel.insertMany(bills, {
+        ordered: false,
+      });
       if (createResult.length > 0) {
-        console.log('___+');
+        // this.logger.log(`账单成功导入${createResult.length}条`);
         return ResponseDto.success({}, undefined, '上传成功');
-        // return new ResponseDto(200, '0', '', {});
       }
     } catch (error) {
-      this.logger.error(error);
-      return {
-     
-      };
+      // console.log(this.logger.log.toString(),"this.logger.log");
+      
+      this.logger.error(
+        // `共计${error.results.length}条账单的交易id重复,导入成功${bills.length - error.results.length}条`
+         `共计${bills.length}条账单，成功导入${bills.length - error.results.length}条，重复数据${error.results.length}条`
+      );
+      return ResponseDto.success(
+        {},
+        undefined,
+        `共计${bills.length}条账单，成功导入${bills.length - error.results.length}条，重复数据${error.results.length}条`
+      );
     }
-    // console.log(createResult);
-
-    return '';
   }
 }

@@ -9,7 +9,7 @@ import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 
 @Injectable()
-export class LoggingService
+export class LifeCycle
   implements OnModuleInit, OnModuleDestroy, OnApplicationBootstrap
 {
   // constructor(@Inject() private readonly logger: Logger) { }

@@ -1,13 +1,12 @@
 /*
  * @Author: HHG
  * @Date: 2024-11-18 11:38:25
- * @LastEditTime: 2024-11-18 20:48:07
+ * @LastEditTime: 2024-11-19 11:33:19
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\utils\response.ts
  * @文件说明:
  */
 export class ResponseDto<T> {
-  status: number; //状态码
   code: string; //业务状态码
   message: string; //业务提示信息
   data: T; //返回值
@@ -15,13 +14,11 @@ export class ResponseDto<T> {
   error?: string | null; // 错误信息，失败时才会出现
   constructor(
     data: T,
-    status: number,
     code: string,
     message: string,
     meta?: any,
     error?: string | null
   ) {
-    this.status = status; //状态码
     this.code = code;
     this.message = message;
     this.data = data;
@@ -38,29 +35,23 @@ export class ResponseDto<T> {
    * @author: 韩宏广
    */
   static success<T>(data: T, meta?: any, message?: string): ResponseDto<T> {
-    return new ResponseDto(
-      data,
-      200,
-      '0',
-      message ? message : '请求成功',
-      meta
-    );
+    return new ResponseDto(data, '0', message ? message : '请求成功', meta);
   }
   /**
-   * @description: 
+   * @description: 业务错误，返回code为1，error错误信息，其他为undefined
    * @param {T} data
    * @param {any} meta
    * @param {string} message
    * @return {*}
    * @author: 韩宏广
    */
-  static error<T>(data: T, meta?: any, message?: string): ResponseDto<T> {
+  static error<T>( error: string,data?: T, meta?: any,): ResponseDto<T> {
     return new ResponseDto(
-      data,
-      200,
-      '0',
-      message ? message : '请求成功',
-      meta
+      data ? data : undefined,
+      '1',
+      undefined,
+      undefined,
+      error ? error : '未知错误'
     );
   }
 }

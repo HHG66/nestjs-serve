@@ -12,6 +12,7 @@ import { AuthService } from './auth.service';
 import { encryption } from '@/utils/cryptogram';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
+import { ResponseDto } from '@/utils/response';
 
 @Injectable()
 export class LoginService {
@@ -37,22 +38,18 @@ export class LoginService {
       username: createUser.username,
     });
     if (existUser) {
-      return {
-        code: 1,
-        message: '已存在注册的用户',
-      };
+      // return {
+      //   code: 1,
+      //   message: '已存在注册的用户',
+      // };
+      return ResponseDto.error("已存在注册的用户");
     }
     //插入用户
     const createUsers = new this.userModel(userInfo);
     const resule = await createUsers.save();
     return resule
-      ? {
-          message: '创建成功',
-          username: resule.username,
-        }
-      : {
-          message: '创建失败',
-        };
+      ? ResponseDto.success({}, undefined, '创建成功')
+      : ResponseDto.error('失败');
   }
   //查找用户
   async findOne(username: string): Promise<CreateUserDto | undefined> {
@@ -61,12 +58,14 @@ export class LoginService {
   //登录
   async login(userInfo: CreateUserDto) {
     const result = {
-      wrongPassword: () => ({ code: '1', message: `账号或密码不正确` }),
-      notFund: () => ({ code: '1', message: `账号未注册` }),
-      handleSuccess: async () => ({
-        token: await this.authService.certificate(authResult.user),
-        userInfo: { name: authResult.user.username },
-      }),
+      wrongPassword: () => (ResponseDto.error('账号或密码不正确')),
+      notFund: () => (ResponseDto.error('账号未注册')),
+      handleSuccess: async () => (
+           ResponseDto.success( {
+            token: await this.authService.certificate(authResult.user),
+            userInfo: { name: authResult.user.username },
+          }, undefined, '创建成功')
+       ),
     };
     const authResult = await this.authService.validateUser(
       userInfo.username,

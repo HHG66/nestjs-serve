@@ -24,6 +24,8 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'no-trailing-spaces': ['error', { ignoreComments: true }],
     "no-unused-vars": "warn",
-    "@typescript-eslint/no-unused-vars": ["warn"]
+    "@typescript-eslint/no-unused-vars": ["warn"],
+    "endOfLine": "crlf"
   },
+  
 };

@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2023-12-15 11:20:15
- * @LastEditTime: 2024-11-18 20:42:42
+ * @LastEditTime: 2024-11-19 11:44:33
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\common\interceptors\response.interceptor.ts
  * @文件说明:
@@ -36,12 +36,13 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
     // const test = context.switchToHttp().getRequest();
     // console.log(test);
     // const req = context.switchToHttp().getRequest<Request>();
+
+
     return next.handle().pipe(
       map((data) => {
-        console.log(data);
+        // console.log(data);
         return new ResponseDto(
           data.data,
-          data.status,
           data.code,
           data.message,
           data.meta,

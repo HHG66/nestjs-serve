@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ResponseInterceptor } from '@/common/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { Logger } from 'winston';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { WINSTON_MODULE_NEST_PROVIDER, WINSTON_MODULE_PROVIDER, WinstonLogger } from 'nest-winston';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -21,6 +21,9 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseInterceptor(LoggerInstant));
   //全局异常过滤器
   app.useGlobalFilters(new HttpExceptionFilter(LoggerInstant));
+
+  // app.useLogger(LoggerInstant);
+  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   await app.listen(3000);
 }
