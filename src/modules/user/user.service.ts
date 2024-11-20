@@ -13,6 +13,7 @@ import { encryption } from '@/utils/cryptogram';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { ResponseDto } from '@/utils/response';
+import { LoggingService } from '@/global/logger/logging.service';
 
 @Injectable()
 export class LoginService {
@@ -21,7 +22,7 @@ export class LoginService {
     private userModel: Model<UserDocument>,
     // @Inject(forwardRef(() => AuthService))
     // private readonly authService: AuthService,
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    @Inject() private readonly logger: LoggingService,
     private authService: AuthService
   ) {}
   //创建用户

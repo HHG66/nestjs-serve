@@ -35,68 +35,73 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
       inject: [ConfigService],
     }),
     //日志配置
-    WinstonModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        transports: [
-          new winston.transports.Console({
-            format: winston.format.combine(
-              winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-              // winston.format.printf(({ timestamp, level, message, context, ...meta }) => {
-              //   console.log(meta);
-              //   const route = meta?.route || 'Unknown Route';
-              //   return `${timestamp} [${level}] ${route} - ${message}`;
-              // }),
-              winston.format.printf(({ timestamp, level, message, context, ...meta }) => {
-                // 添加路由信息
-                const route = meta?.route || "";
-                // console.log("route",route);
-                return `${timestamp} [${level}] ${route} - ${message}`;
-              }),
-            ),
-          }),
-          // new winston.transports.DailyRotateFile({
-          //   dirname: configService.get<string>('DIE_NAME'), // 日志保存的目录
-          //   filename: configService.get<string>('FILE_NAME'), // 日志名称，占位符 %DATE% 取值为 datePattern 值。
-          //   datePattern: configService.get<string>('DATE_PATTERN'), // 日志轮换的频率，此处表示每天。
-          //   zippedArchive: configService.get<boolean>('ZIPPEDARCHIVE'), // 是否通过压缩的方式归档被轮换的日志文件。
-          //   maxSize: configService.get<string>('MAXSIZE'), // 设置日志文件的最大大小，m 表示 mb 。
-          //   maxFiles: configService.get<string>('MAXFILES'), // maxFiles 用于限制保留的日志文件的数量，而不是天数
-          //   // 记录时添加时间戳信息
-          //   // format: winston.format.combine(
-          //   //   winston.format.timestamp({
-          //   //     format: configService.get<string>('FORMAT'),
-          //   //   }),
-          //   //   winston.format.json()
-          //   // ),
-          //   format: winston.format.combine(
-          //     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-          //     winston.format.printf(({ timestamp, level, message, context, ...meta }) => {
-          //       // console.log( timestamp, level, message, context, meta);
-                
-          //       const route = meta?.route || "";
-          //       return `${timestamp} [${level}] ${route} - ${message}`;
-          //     }),
-          //   ),
-            
-          // }),
-          // new winston.transports.DailyRotateFile({
-          //   dirname: 'logs',
-          //   filename: '%DATE%.log',
-          //   datePattern: 'YYYY-MM-DD',
-          //   maxFiles: '30d',
-          //   format: winston.format.combine(
-          //     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-          //     winston.format.printf(({ timestamp, level, message, route, ...meta }) => {
-          //       const routeInfo = route || 'Unknown Route';
-          //       return `${timestamp} [${level}] ${routeInfo} - ${message}`;
-          //     }),
-          //   ),
-          // }),
-        ],
-      }),
-      inject: [ConfigService],
+    WinstonModule.forRoot({
+      transports: [
+        new winston.transports.Console(),
+      ],
     }),
+    // WinstonModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   useFactory: async (configService: ConfigService) => ({
+    //     transports: [
+    //       new winston.transports.Console({
+    //         format: winston.format.combine(
+    //           winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    //           // winston.format.printf(({ timestamp, level, message, context, ...meta }) => {
+    //           //   console.log(meta);
+    //           //   const route = meta?.route || 'Unknown Route';
+    //           //   return `${timestamp} [${level}] ${route} - ${message}`;
+    //           // }),
+    //           winston.format.printf(({ timestamp, level, message, context, ...meta }) => {
+    //             // 添加路由信息
+    //             const route = meta?.route || "";
+    //             // console.log("route",route);
+    //             return `${timestamp} [${level}] ${route} - ${message}`;
+    //           }),
+    //         ),
+    //       }),
+    //       // new winston.transports.DailyRotateFile({
+    //       //   dirname: configService.get<string>('DIE_NAME'), // 日志保存的目录
+    //       //   filename: configService.get<string>('FILE_NAME'), // 日志名称，占位符 %DATE% 取值为 datePattern 值。
+    //       //   datePattern: configService.get<string>('DATE_PATTERN'), // 日志轮换的频率，此处表示每天。
+    //       //   zippedArchive: configService.get<boolean>('ZIPPEDARCHIVE'), // 是否通过压缩的方式归档被轮换的日志文件。
+    //       //   maxSize: configService.get<string>('MAXSIZE'), // 设置日志文件的最大大小，m 表示 mb 。
+    //       //   maxFiles: configService.get<string>('MAXFILES'), // maxFiles 用于限制保留的日志文件的数量，而不是天数
+    //       //   // 记录时添加时间戳信息
+    //       //   // format: winston.format.combine(
+    //       //   //   winston.format.timestamp({
+    //       //   //     format: configService.get<string>('FORMAT'),
+    //       //   //   }),
+    //       //   //   winston.format.json()
+    //       //   // ),
+    //       //   format: winston.format.combine(
+    //       //     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    //       //     winston.format.printf(({ timestamp, level, message, context, ...meta }) => {
+    //       //       // console.log( timestamp, level, message, context, meta);
+                
+    //       //       const route = meta?.route || "";
+    //       //       return `${timestamp} [${level}] ${route} - ${message}`;
+    //       //     }),
+    //       //   ),
+            
+    //       // }),
+    //       // new winston.transports.DailyRotateFile({
+    //       //   dirname: 'logs',
+    //       //   filename: '%DATE%.log',
+    //       //   datePattern: 'YYYY-MM-DD',
+    //       //   maxFiles: '30d',
+    //       //   format: winston.format.combine(
+    //       //     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    //       //     winston.format.printf(({ timestamp, level, message, route, ...meta }) => {
+    //       //       const routeInfo = route || 'Unknown Route';
+    //       //       return `${timestamp} [${level}] ${routeInfo} - ${message}`;
+    //       //     }),
+    //       //   ),
+    //       // }),
+    //     ],
+    //   }),
+    //   inject: [ConfigService],
+    // }),
  
     Modules,
     // UserModule
@@ -126,10 +131,10 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
   exports: [CustomWinstonLogger],   // 导出 Logger，供其他模块使用
 })
 export class AppModule {
-  //注册中间件
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware) // 使用LoggerMiddleware
-      .forRoutes('*'); // 对所有路由应用该中间件
-  }
+  // //注册中间件
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply(LoggerMiddleware) // 使用LoggerMiddleware
+  //     .forRoutes('*'); // 对所有路由应用该中间件
+  // }
 }

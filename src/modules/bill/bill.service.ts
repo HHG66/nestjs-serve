@@ -53,7 +53,7 @@ export class BillService {
         return ResponseDto.success({}, undefined, '上传成功');
       }
     } catch (error) {
-      this.logger.error(
+      this.logger.log(
         // `共计${error.results.length}条账单的交易id重复,导入成功${bills.length - error.results.length}条`
          `共计${bills.length}条账单，成功导入${bills.length - error.results.length}条，重复数据${error.results.length}条`
       );

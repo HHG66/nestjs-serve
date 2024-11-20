@@ -17,7 +17,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     snapshot: true,
   });
-  const LoggerInstant = app.get(WINSTON_MODULE_PROVIDER) as Logger;
+  // const LoggerInstant = app.get(WINSTON_MODULE_PROVIDER) as Logger;
 
   //全局管道
   app.useGlobalPipes(new ValidationPipe());

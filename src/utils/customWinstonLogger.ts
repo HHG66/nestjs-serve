@@ -16,7 +16,8 @@ export class CustomWinstonLogger {
             winston.format.printf(
               ({ timestamp, level, message, context, ...meta }) => {
                 const route = meta.route || 'Unknown Route'; // 获取路由信息
-                return `${timestamp} [${level}] ${route} - ${message}`;
+                // return `${timestamp} [${level}] ${route} - ${message}`;
+                return `${timestamp} [${level}] ${route} `;
               }
             )
           ),

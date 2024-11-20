@@ -1,19 +1,37 @@
+import { LoggingService } from '@/global/logger/logging.service';
 import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 // import dayjs from 'dayjs';
 import { NextFunction, Request, Response } from 'express';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
-  private logger = new Logger();
+  // private logger = new Logger();
+  constructor(
+    // @Inject() private logger: LoggingService
+  // @Inject()
+  private readonly logger: LoggingService,
+) {}
   use(req: Request, res: Response, next: NextFunction) {
     // 记录开始时间
     const start = Date.now();
     // 获取请求信息
-    const { method, originalUrl, ip, httpVersion, headers } = req;
-
+    const { method, originalUrl, ip, httpVersion, headers ,body,} = req;
+    console.log(req);
+    
     // 获取响应信息
     const { statusCode } = res;
 
+
+    // 保存原始的 res.send 方法
+    const originalSend = res.send;
+
+    // 用来存储响应内容
+    let responseBody: any;
+
+    res.send = function (body: any) {
+      responseBody = body; // 捕获响应内容
+      return originalSend.apply(this, arguments); // 调用原始的 send 方法
+    };
     res.on('finish', () => {
       // 记录结束时间
       const end = Date.now();
@@ -24,13 +42,13 @@ export class LoggerMiddleware implements NestMiddleware {
       // const logFormat = ` ${method} ${originalUrl} HTTP/${httpVersion} ${ip} ${statusCode} ${duration}ms}`;
       const logFormat = ` ${method} ${originalUrl}  ${statusCode} ${duration}ms`;
 
-      // 根据状态码，进行日志类型区分
+      // 打印日志，包括响应内容
       if (statusCode >= 500) {
-        this.logger.error(logFormat, originalUrl);
+        this.logger.error(`${logFormat} - Response: ${JSON.stringify(responseBody)}`, req);
       } else if (statusCode >= 400) {
-        this.logger.warn(logFormat, originalUrl);
+        this.logger.warn(`${logFormat} - Response: ${JSON.stringify(responseBody)}`, req);
       } else {
-        this.logger.log(logFormat, originalUrl);
+        this.logger.log(`${logFormat} - Response: ${JSON.stringify(responseBody)}`, req);
       }
     });
 
