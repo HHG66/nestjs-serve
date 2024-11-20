@@ -22,6 +22,7 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
   imports: [
     LoggerModule,
     ConfigModule.forRoot({
+      isGlobal: true,
       load: [database, logconfig, jwtConfig],
     }),
     //数据库配置
@@ -117,10 +118,10 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
       provide: APP_GUARD,
       useClass: JwtAuthGuard,  //注册全局守卫
     },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ResponseInterceptor, // 设置为全局拦截器
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: ResponseInterceptor, // 设置为全局拦截器
+    // },
   ],
   exports: [CustomWinstonLogger],   // 导出 Logger，供其他模块使用
 })

@@ -16,12 +16,12 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { Logger } from 'winston';
+import { LoggingService } from '@/global/logger/logging.service';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: LoggingService
   ) {}
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -40,10 +40,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
     const { query, headers, url, method, body } = request;
 
-    this.logger.error(msg, {
-      status,
-      req: getReqMainInfo(request),
-    });
+    // this.logger.error(msg, {
+    //   status,
+    //   req: getReqMainInfo(request),
+    // });
+    this.logger.error(msg, 
+      request
+    );
     response.status(status).json(message);
   }
 }
