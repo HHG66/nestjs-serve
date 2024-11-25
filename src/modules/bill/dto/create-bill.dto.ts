@@ -32,7 +32,7 @@ export class CreateBillDto {
 
   @IsNotEmpty({ message: '金额不能为空' })
   @IsString()
-  amount: string;
+  amount: string|Number;
 
   @IsNotEmpty({ message: '支付方式不能为空' })
   @IsString()
@@ -55,6 +55,8 @@ export class CreateBillDto {
 
   @IsDateString()
   updataDate: Date;
+
+  createdAt:any
 }
 export class CreateBillListDto {
   map(arg0: (data: any) => CreateBillDto): CreateBillDto[] {

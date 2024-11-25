@@ -37,7 +37,17 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
     //日志配置
     WinstonModule.forRoot({
       transports: [
-        new winston.transports.Console(),
+        // new winston.transports.Console(),
+        new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+            winston.format.printf(
+              ({ timestamp, level, message, context, ...meta }) => {
+                return `${timestamp} [${level}]  - ${message}`;
+              }
+            )
+          ),
+        }),
       ],
     }),
     // WinstonModule.forRootAsync({

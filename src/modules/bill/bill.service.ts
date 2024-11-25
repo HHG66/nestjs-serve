@@ -10,7 +10,10 @@ import { Inject } from '@nestjs/common';
 import { log } from 'console';
 import { ResponseDto } from '@/utils/response';
 import { LoggingService } from '@/global/logger/logging.service';
+import { QueryBillDto } from './dto/query-bill.dto';
 // import { CustomWinstonLogger } from '@/utils/customWinstonLogger';
+import moment from 'moment';
+
 @Injectable()
 export class BillService {
   constructor(
@@ -18,10 +21,9 @@ export class BillService {
     @InjectModel('Bill')
     private billModel: Model<BillDocument>,
     // @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-    // @Inject(WINSTON_MODULE_PROVIDER) 
+    // @Inject(WINSTON_MODULE_PROVIDER)
     @Inject()
-    private readonly logger: LoggingService,  // 注入 LoggingService
-
+    private readonly logger: LoggingService // 注入 LoggingService
   ) {}
   async uploadBill(data: CreateBillListDto) {
     // console.log(typeof data);
@@ -34,13 +36,14 @@ export class BillService {
       bill.counterparty = data.counterparty;
       bill.product = data.product;
       bill.collectorbranch = data.collectorbranch;
-      bill.amount = data.amount;
+      bill.amount =  parseFloat(data.amount.replace('¥', ''));
       bill.patternpayment = data.patternpayment;
       bill.currentstate = data.currentstate;
       bill.trasactionid = data.trasactionid;
       bill.merchantstoorder = data.merchantstoorder;
       bill.remark = data.remark;
       bill.updataDate = data.updataDate;
+      // bill.createdAt = new Date();
       return bill;
     });
     try {
@@ -48,20 +51,54 @@ export class BillService {
       const createResult = await this.billModel.insertMany(bills, {
         ordered: false,
       });
-      if (createResult.length > 0) {
+      if (createResult.length >= 0) {
         // this.logger.log(`账单成功导入${createResult.length}条`);
-        return ResponseDto.success({}, undefined, '上传成功');
+        return ResponseDto.success({}, undefined, `上传成功共导入${createResult.length}`);
       }
     } catch (error) {
+      // console.log(error);
+      // console.log(error.writeErrors.length);
+      // console.log(error.results.length);
       this.logger.log(
         // `共计${error.results.length}条账单的交易id重复,导入成功${bills.length - error.results.length}条`
-         `共计${bills.length}条账单，成功导入${bills.length - error.results.length}条，重复数据${error.results.length}条`
+        `共计${bills.length}条账单，成功导入${error.insertedDocs.length}条，重复数据${error.writeErrors.length}条`
       );
-      return ResponseDto.success(
+      return ResponseDto.successWithAutoTip(
         {},
-        undefined,
-        `共计${bills.length}条账单，成功导入${bills.length - error.results.length}条，重复数据${error.results.length}条`
+        `共计${bills.length}条账单，成功导入${error.insertedDocs.length}条，重复数据${error.writeErrors.length}条`
       );
     }
+  }
+  async getdisposebill(query: QueryBillDto) {
+    let startOfDay = moment(query.importTime);
+    let endOfDay = moment(query.importTime).add(1, 'M');
+    console.log(startOfDay, endOfDay);
+    let queryData={};
+    if (query.importTime !== undefined) {
+      queryData = {
+        createdAt: {
+          $gte: startOfDay,
+          $lt: endOfDay,
+        },
+      };
+    }
+    let result = await this.billModel
+      .find(queryData)
+      .skip((query.page - 1) * query.pageSize)
+      .limit(query.pageSize)
+      .lean();
+    let billTotal = await this.billModel.countDocuments();
+    let newResult = result.map((element) => {
+      return {
+        ...element,
+        createdAt: moment(element.createdAt).format('YYYY-MM-DD hh:mm:ss'),
+      };
+    });
+    // console.log(newResult.length);
+    return ResponseDto.success(newResult, {
+      page: query.page,
+      pageSize: query.pageSize,
+      total: billTotal,
+    });
   }
 }

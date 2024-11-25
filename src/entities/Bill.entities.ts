@@ -17,7 +17,7 @@ export class Bill {
   @Prop()
   collectorbranch: string; //	收/支
   @Prop()
-  amount: string; //金额(元)
+  amount: number; //金额(元)
   @Prop()
   patternpayment: string; //支付方式
   @Prop()
@@ -28,8 +28,12 @@ export class Bill {
   merchantstoorder: string; //商户单号
   @Prop()
   remark: string; //备注
+  @Prop({ default:()=>new Date() })
+  createdAt:Date
+  //插入时间
   @Prop()
   updataDate: Date;
+
 }
 
 export const BillSchema = SchemaFactory.createForClass(Bill);
