@@ -37,7 +37,7 @@ export class LoggerMiddleware implements NestMiddleware {
       const end = Date.now();
       // 计算时间差
       const duration = end - start;
-          
+      
       // 这里可以根据自己需要组装日志信息：[timestamp] [method] [url] HTTP/[httpVersion] [client IP] [status code] [response time]ms [user-agent]
       // const logFormat = ` ${method} ${originalUrl} HTTP/${httpVersion} ${ip} ${statusCode} ${duration}ms}`;
       const logFormat = ` ${method} ${originalUrl}  ${statusCode} ${duration}ms`;
