@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-11-18 11:38:25
- * @LastEditTime: 2024-11-22 18:18:27
+ * @LastEditTime: 2024-11-29 14:33:07
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\utils\response.ts
  * @文件说明:
@@ -50,8 +50,8 @@ export class ResponseDto<T> {
       data ? data : undefined,
       '1',
       undefined,
-      message,
-      undefined
+      undefined,
+      message
     );
   }
   /**

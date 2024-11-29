@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-27 20:06:12
- * @LastEditTime: 2024-11-22 18:12:32
+ * @LastEditTime: 2024-11-29 17:54:39
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\entities\consumptionType.entities.ts
  * @文件说明:
@@ -15,7 +15,7 @@ export type ConsumptionTypeDocument = HydratedDocument<ConsumptionType>;
 @Schema()
 export class ConsumptionType {
   @Prop({ required: true, unique: true})
-  consumptionTypenName: String
+  consumptionTypeName: String
   @Prop()
   productKeyWords: string[]
   @Prop()

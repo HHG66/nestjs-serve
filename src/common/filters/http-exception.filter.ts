@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2023-12-16 09:05:38
- * @LastEditTime: 2024-11-26 16:05:25
+ * @LastEditTime: 2024-11-29 14:30:34
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\common\filters\http-exception.filter.ts
  * @文件说明:
@@ -47,7 +47,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if ((message as any).statusCode == 400) {
       response
         .status(status)
-        .json(ResponseDto.error((message as any).message[0].toString()));
+        .json(ResponseDto.failureWithAutoTip((message as any).message[0].toString()));
+        return 
     }
     response.status(status).json(message);
   }
