@@ -30,7 +30,6 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
         const duration = Date.now() - now; // 计算响应时间
         const res = context.switchToHttp().getResponse();
         const { statusCode } = res;
-
         // 构建日志格式
         const logFormat = `${method} ${originalUrl} ${statusCode} ${duration}ms`;
         let loggerInfo = '';
@@ -50,6 +49,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
             `${logFormat} -auto - Body: ${JSON.stringify(body)} - ${loggerInfo}`,
             req
           );
+          return ResponseDto.failureWithAutoTip(JSON.stringify(body));
         } else {
           this.logger.log(
             `${logFormat} -auto - Body: ${JSON.stringify(body)}  - ${loggerInfo}`,
