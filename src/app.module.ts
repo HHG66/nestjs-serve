@@ -18,6 +18,8 @@ import { CustomWinstonLogger } from '@/utils/customWinstonLogger';
 import { LoggerModule } from '@/global/logger/logger.module';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 // import { UserModule } from '@/modules/user/user.module';
+import * as mongoose from 'mongoose';
+
 @Module({
   imports: [
     LoggerModule,
@@ -28,28 +30,52 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
     //数据库配置
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => {
+      useFactory: async (configService: ConfigService,CustomWinstonLogger:CustomWinstonLogger) => {
         const uri = configService.get<string>('MONGODB_URI');
-        return { uri };
+        const serverSelectionTimeoutMS=configService.get<number>("serverSelectionTimeoutMS")
+        try {
+          // 连接MongoDB
+          const connection = await mongoose.connect(uri, {
+            serverSelectionTimeoutMS: serverSelectionTimeoutMS,  // 设置超时时间
+          }); 
+    
+          // 监听错误事件
+          connection.connection.on('error', (err) => {
+            Logger.error(`MongoDB connection error: ${err.message}`, err.stack);
+          });
+    
+          connection.connection.on('disconnected', () => {
+            Logger.warn('MongoDB disconnected');
+          });
+    
+        } catch (error) {
+          // Logger.error(`Failed to connect to MongoDB: ${error.message}`, error.stack);
+          // console.log(`${error.message}`, error.stack);
+          // console.log();
+          CustomWinstonLogger.error(`${error.message}`, error.stack)
+          // throw new Error('MongoDB connection failed');
+        }
+
+        return { uri,serverSelectionTimeoutMS };
       },
-      inject: [ConfigService],
+      inject: [ConfigService,CustomWinstonLogger],
     }),
     //日志配置
-    WinstonModule.forRoot({
-      transports: [
-        // new winston.transports.Console(),
-        new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-            winston.format.printf(
-              ({ timestamp, level, message, context, ...meta }) => {
-                return `${timestamp} [${level}]  - ${message}`;
-              }
-            )
-          ),
-        }),
-      ],
-    }),
+    // WinstonModule.forRoot({
+    //   transports: [
+    //     // new winston.transports.Console(),
+    //     new winston.transports.Console({
+    //       format: winston.format.combine(
+    //         winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    //         // winston.format.printf(
+    //         //   ({ timestamp, level, message, context, ...meta }) => {
+    //         //     return `${timestamp} [${level}]  - ${message}`;
+    //         //   }
+    //         // )
+    //       ),
+    //     }),
+    //   ],
+    // }),
     // WinstonModule.forRootAsync({
     //   imports: [ConfigModule],
     //   useFactory: async (configService: ConfigService) => ({
@@ -88,12 +114,12 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
     //       //     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     //       //     winston.format.printf(({ timestamp, level, message, context, ...meta }) => {
     //       //       // console.log( timestamp, level, message, context, meta);
-                
+
     //       //       const route = meta?.route || "";
     //       //       return `${timestamp} [${level}] ${route} - ${message}`;
     //       //     }),
     //       //   ),
-            
+
     //       // }),
     //       // new winston.transports.DailyRotateFile({
     //       //   dirname: 'logs',
@@ -112,7 +138,7 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
     //   }),
     //   inject: [ConfigService],
     // }),
- 
+
     Modules,
     // UserModule
     // LoginModule,
@@ -131,14 +157,14 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
     LifeCycle,
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,  //注册全局守卫
+      useClass: JwtAuthGuard, //注册全局守卫
     },
     // {
     //   provide: APP_INTERCEPTOR,
     //   useClass: ResponseInterceptor, // 设置为全局拦截器
     // },
   ],
-  exports: [CustomWinstonLogger],   // 导出 Logger，供其他模块使用
+  exports: [CustomWinstonLogger], // 导出 Logger，供其他模块使用
 })
 export class AppModule {
   // //注册中间件

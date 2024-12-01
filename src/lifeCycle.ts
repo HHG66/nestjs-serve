@@ -7,6 +7,9 @@ import {
 } from '@nestjs/common';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { InjectConnection } from '@nestjs/mongoose';
+import { Connection } from 'mongoose';
+import { CustomWinstonLogger } from './utils/customWinstonLogger';
 
 @Injectable()
 export class LifeCycle
@@ -14,10 +17,13 @@ export class LifeCycle
 {
   // constructor(@Inject() private readonly logger: Logger) { }
   constructor(
-    // @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    @Inject()
+    private readonly logger: CustomWinstonLogger
   ) {}
   onModuleInit() {
-    console.log(`项目初始化完成`);
+    // console.log(`项目初始化完成`);
+    this.logger.log('项目初始化完成', "/");
+    // console.log(connectionResult);
   }
 
   onModuleDestroy() {

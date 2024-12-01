@@ -23,7 +23,7 @@ export class BillController {
   }
  @Get('getdisposebill')
  getdisposebill(@Query() query: QueryBillDto) {
-    console.log(query)
+    // console.log(query)
     return this.billService.getdisposebill(query);
   }
   // @Post('')

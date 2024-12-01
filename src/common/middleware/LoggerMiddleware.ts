@@ -16,7 +16,7 @@ export class LoggerMiddleware implements NestMiddleware {
     const start = Date.now();
     // 获取请求信息
     const { method, originalUrl, ip, httpVersion, headers ,body,} = req;
-    console.log(req);
+    // console.log(req);
     
     // 获取响应信息
     const { statusCode } = res;

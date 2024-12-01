@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2023-12-16 09:05:38
- * @LastEditTime: 2024-11-29 14:30:34
+ * @LastEditTime: 2024-12-01 09:33:33
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\common\filters\http-exception.filter.ts
  * @文件说明:
@@ -27,6 +27,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
+    // console.log(response);
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
     const message = exception.getResponse();

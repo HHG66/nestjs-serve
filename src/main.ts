@@ -36,7 +36,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter(loggingService));
 
   // app.useLogger(LoggerInstant);
-  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+  // app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   await app.listen(3000);
 }
