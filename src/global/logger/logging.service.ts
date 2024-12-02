@@ -21,9 +21,15 @@ export class LoggingService {
   //   this.logger.log(message, route);
   // }
 
-  error(message: string, req?: Request) {
+  error(message: any, req?: Request) {
     const route = this.request&&this.request.originalUrl? this.request.originalUrl:req?.originalUrl; // 获取请求的路由
-    this.logger.error(message, route);
+    let errorInfo:any
+    try {
+      errorInfo= JSON.stringify(message)
+    } catch (error) {
+      errorInfo=message
+    }
+    this.logger.error(errorInfo , route);
   }
 
   warn(message: string, req?: Request) {

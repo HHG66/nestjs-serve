@@ -1,8 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import {
-  CreateConsumptiontypeDto,
-  CreateConsumptiontypeModelDto,
-} from './dto/create-consumptiontype.dto';
+import { CreateConsumptiontypeDto, CreateConsumptiontypeModelDto } from './dto/create-consumptiontype.dto';
 import { UpdateConsumptionTypeDto } from './dto/update-consumptiontype.dto';
 import { ConsumptionTypeDocument } from '@/entities/consumptionType.entities';
 import { InjectModel } from '@nestjs/mongoose';
@@ -35,9 +32,14 @@ export class ConsumptiontypeService {
         return ResponseDto.success({}, undefined, '新增成功');
       }
     } catch (error) {
-      console.log('error', error);
+      // console.log('error', error);
       this.logger.error(error);
-      return ResponseDto.failureWithAutoTip(`插入失败已经存在消费类型`);
+      if (error.code == '11000') {
+        if (error.errorResponse.keyValue.consumptionTypeName !== undefined) {
+          return ResponseDto.failureWithAutoTip(`已经存在消费类型`);
+        }
+      }
+      return ResponseDto.failureWithAutoTip(`新增失败`);
     }
   }
 
@@ -48,9 +50,7 @@ export class ConsumptiontypeService {
     }
     //类型定义让人痛苦！
     consumptionTypeName;
-    let result = (await this.consumptionTypeModel
-      .find(queryData)
-      .lean()) as any;
+    let result = (await this.consumptionTypeModel.find(queryData).lean()) as any;
     result.createdAt = moment(result.createdAt).format('YYYY-MM-DD');
     return ResponseDto.success(result);
   }
@@ -66,22 +66,62 @@ export class ConsumptiontypeService {
       return ResponseDto.failureWithAutoTip('删除失败');
     }
   }
-  async updateConsumptionType(
-    updateConsumptiontypeDto: UpdateConsumptionTypeDto
-  ) {
-    let updataProductKeyWordsList = [];
-    let consumptionType: UpdateConsumptionTypeDto =
-      await this.consumptionTypeModel
-        .findOne({ _id: updateConsumptiontypeDto._id })
-        .lean();
-    consumptionType.productKeyWords.map((element) => {
-     //两个数组，除了双循环判断，是否还有其他优化办法和思路，带解决
-      updataProductKeyWordsList.push(
-        element,
-        ...updateConsumptiontypeDto.productKeyWords
-      );
-    });
-    console.log(updataProductKeyWordsList);
+  async updateConsumptionType(updateConsumptiontype: UpdateConsumptionTypeDto) {
+    // let productKeyWordsList = [];
+    // productKeyWordsList = updateConsumptiontype.productKeyWords;
+    let updataInfo = {
+      consumptionTypeName: updateConsumptiontype.consumptionTypeName,
+      productKeyWords: updateConsumptiontype.productKeyWords,
+      remark: updateConsumptiontype.remark,
+    };
+    // updateConsumptiontypeDto.productKeyWords.length > 0 ? (updataProductKeyWordsList = consumptionType.productKeyWords) : '';
+    // consumptionType.productKeyWords.length > 0 &&
+    //   consumptionType.productKeyWords.map((element: any) => {
+    //     //两个数组，除了双循环判断，是否还有其他优化办法和思路，带解决
+    //     updateConsumptiontypeDto.productKeyWords.map((obj: any) => {
+    //       if (obj.value !== element.value) {
+    //         // updataProductKeyWordsList.push(obj);
+    //         test.push(obj)
+    //       }
+    //     });
+    //     // updataProductKeyWordsList.push(
+    //     //   element,
+    //     //   ...updateConsumptiontypeDto.productKeyWords
+    //     // );
+    //     // updataProductKeyWordsList.push({
+    //     //   label: element.label,
+    //     //   value: element.value,
+    //     //   color: element.color,
+    //     // });
+    //   });
+    //   console.log(test);
+
+    // consumptionType.productKeyWords.length == 0 ? (updataProductKeyWordsList = updateConsumptiontypeDto.productKeyWords) : '';
+    // console.log(updataProductKeyWordsList);
+    console.log(updataInfo);
+
+    try {
+      let result = await this.consumptionTypeModel
+        .updateOne(
+          {
+            _id: updateConsumptiontype._id,
+          },
+          updataInfo
+          // $set: { productKeyWords: updataProductKeyWordsList }
+        )
+        .exec();
+      if (result.modifiedCount > 0) {
+        return ResponseDto.successWithAutoTip({}, '修改成功');
+      }
+      if (result.matchedCount > 0 && updateConsumptiontype.productKeyWords.length > 0) {
+        return ResponseDto.successWithAutoTip({}, '修改成功');
+      }
+      if (result.matchedCount == 0) {
+        return ResponseDto.failureWithAutoTip('未找到数据');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // findOne(id: number) {

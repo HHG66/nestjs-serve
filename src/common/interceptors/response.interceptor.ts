@@ -51,8 +51,12 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
           );
           return ResponseDto.failureWithAutoTip(JSON.stringify(body));
         } else {
+          // this.logger.log(
+          //   `${logFormat} -auto - Body: ${JSON.stringify(body)}  - ${loggerInfo}`,
+          //   req
+          // );
           this.logger.log(
-            `${logFormat} -auto - Body: ${JSON.stringify(body)}  - ${loggerInfo}`,
+            `auto - Body: ${JSON.stringify(body)}  - ${loggerInfo}`,
             req
           );
         }
