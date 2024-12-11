@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateConsumptiontypeDto, CreateConsumptiontypeModelDto } from './dto/create-consumptiontype.dto';
 import { UpdateConsumptionTypeDto } from './dto/update-consumptiontype.dto';
-import { ConsumptionTypeDocument } from '@/entities/consumptionType.entities';
+import { ConsumptionTypeDocument } from '@/model/consumptionType.entities';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ResponseDto } from '@/utils/response';
@@ -49,7 +49,7 @@ export class ConsumptiontypeService {
       queryData.consumptionTypeName = consumptionTypeName;
     }
     //类型定义让人痛苦！
-    consumptionTypeName;
+    // consumptionTypeName;
     let result = (await this.consumptionTypeModel.find(queryData).lean()) as any;
     result.createdAt = moment(result.createdAt).format('YYYY-MM-DD');
     return ResponseDto.success(result);

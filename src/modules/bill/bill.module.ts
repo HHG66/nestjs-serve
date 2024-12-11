@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { BillService } from './bill.service';
 import { BillController } from './bill.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { BillSchema } from '@/entities/Bill.entities';
+import { BillSchema } from '@/model/Bill.entities';
 import { CustomWinstonLogger } from '@/utils/customWinstonLogger'; // 确保路径正确
 import { LoggingService } from '@/global/logger//logging.service';
 @Module({

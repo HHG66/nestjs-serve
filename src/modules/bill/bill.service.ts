@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateBillDto, CreateBillListDto } from './dto/create-bill.dto';
 // import { UpdateBillDto } from './dto/update-bill.dto';
-import { BillDocument } from '@/entities/Bill.entities';
+import { BillDocument } from '@/model/Bill.entities';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -36,7 +36,7 @@ export class BillService {
       bill.counterparty = data.counterparty;
       bill.product = data.product;
       bill.collectorbranch = data.collectorbranch;
-      bill.amount =  parseFloat(data.amount.replace('¥', ''));
+      bill.amount = parseFloat(data.amount.replace('¥', ''));
       bill.patternpayment = data.patternpayment;
       bill.currentstate = data.currentstate;
       bill.trasactionid = data.trasactionid;
@@ -63,17 +63,14 @@ export class BillService {
         // `共计${error.results.length}条账单的交易id重复,导入成功${bills.length - error.results.length}条`
         `共计${bills.length}条账单，成功导入${error.insertedDocs.length}条，重复数据${error.writeErrors.length}条`
       );
-      return ResponseDto.successWithAutoTip(
-        {},
-        `共计${bills.length}条账单，成功导入${error.insertedDocs.length}条，重复数据${error.writeErrors.length}条`
-      );
+      return ResponseDto.successWithAutoTip({}, `共计${bills.length}条账单，成功导入${error.insertedDocs.length}条，重复数据${error.writeErrors.length}条`);
     }
   }
   async getdisposebill(query: QueryBillDto) {
     let startOfDay = moment(query.importTime);
     let endOfDay = moment(query.importTime).add(1, 'M');
     console.log(startOfDay, endOfDay);
-    let queryData={};
+    let queryData = {};
     if (query.importTime !== undefined) {
       queryData = {
         createdAt: {
@@ -87,7 +84,8 @@ export class BillService {
       .skip((query.page - 1) * query.pageSize)
       .limit(query.pageSize)
       .lean();
-    let billTotal = await this.billModel.countDocuments();
+    // let billTotal = await this.billModel.countDocuments();
+    let billTotal = (await this.billModel.find(queryData).lean()).length;
     let newResult = result.map((element) => {
       return {
         ...element,

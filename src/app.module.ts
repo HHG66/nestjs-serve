@@ -18,6 +18,7 @@ import { CustomWinstonLogger } from '@/utils/customWinstonLogger';
 import { LoggerModule } from '@/global/logger/logger.module';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 // import { UserModule } from '@/modules/user/user.module';
+import { IncometypeModule } from './modules/incometype/incometype.module';
 import * as mongoose from 'mongoose';
 
 @Module({
@@ -60,6 +61,8 @@ import * as mongoose from 'mongoose';
       },
       inject: [ConfigService,CustomWinstonLogger],
     }),
+    //引入模块
+    Modules,
     //日志配置
     // WinstonModule.forRoot({
     //   transports: [
@@ -138,8 +141,6 @@ import * as mongoose from 'mongoose';
     //   }),
     //   inject: [ConfigService],
     // }),
-
-    Modules,
     // UserModule
     // LoginModule,
     // AuthModule,
