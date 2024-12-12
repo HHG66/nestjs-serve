@@ -7,7 +7,7 @@ export type BillDocument = HydratedDocument<Bill>;
 @Schema()
 export class Bill {
   @Prop()
-  tradinghours: string; //交易时间
+  tradinghours: Date; //交易时间
   @Prop()
   tradetype: string; //交易类型
   @Prop()

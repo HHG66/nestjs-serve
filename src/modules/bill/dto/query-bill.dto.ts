@@ -11,3 +11,14 @@ export class QueryBillDto {
 
 }
   
+
+export class QueryDateRangeDto {
+  // @IsNotEmpty({message:"日期范围不能为空"})
+  @IsString()
+  startDate:string
+
+  @IsString()
+  endDate:string
+  
+}
+  

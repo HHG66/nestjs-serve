@@ -12,7 +12,8 @@ import { ResponseDto } from '@/utils/response';
 import { LoggingService } from '@/global/logger/logging.service';
 import { QueryBillDto } from './dto/query-bill.dto';
 // import { CustomWinstonLogger } from '@/utils/customWinstonLogger';
-import moment from 'moment';
+// import moment from 'moment';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class BillService {
@@ -31,7 +32,7 @@ export class BillService {
     // 使用 rawData 创建 CreateBillDto 实例并放入数组中
     const bills: CreateBillDto[] = data.map((data) => {
       const bill = new CreateBillDto();
-      bill.tradinghours = data.tradinghours;
+      bill.tradinghours = new Date(data.tradinghours);
       bill.tradetype = data.tradetype;
       bill.counterparty = data.counterparty;
       bill.product = data.product;
@@ -67,8 +68,8 @@ export class BillService {
     }
   }
   async getdisposebill(query: QueryBillDto) {
-    let startOfDay = moment(query.importTime);
-    let endOfDay = moment(query.importTime).add(1, 'M');
+    let startOfDay = dayjs(query.importTime);
+    let endOfDay = dayjs(query.importTime).add(1, 'M');
     console.log(startOfDay, endOfDay);
     let queryData = {};
     if (query.importTime !== undefined) {
@@ -89,7 +90,8 @@ export class BillService {
     let newResult = result.map((element) => {
       return {
         ...element,
-        createdAt: moment(element.createdAt).format('YYYY-MM-DD hh:mm:ss'),
+        createdAt: dayjs(element.createdAt).format('YYYY-MM-DD hh:mm:ss'),
+        tradinghours: dayjs(element.tradinghours).format('YYYY-MM-DD hh:mm:ss'),
       };
     });
     // console.log(newResult.length);
@@ -98,5 +100,18 @@ export class BillService {
       pageSize: query.pageSize,
       total: billTotal,
     });
+  }
+
+  async getPeriodTimebill(query) {
+    let result = await this.billModel
+      .find({
+        tradinghours: {
+          $lt: new Date(query.endDate),
+          $gt: new Date(query.startDate),
+        },
+      })
+      .exec();
+    console.log(result);
+    return ResponseDto.success(result)
   }
 }

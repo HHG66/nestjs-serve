@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsDateString,
   ValidateNested,
+  IsDate,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -11,8 +12,8 @@ export class CreateBillDto {
     throw new Error('Method not implemented.');
   }
   @IsNotEmpty({ message: '交易时间不能为空' })
-  @IsString()
-  tradinghours: string;
+  @IsDate()
+  tradinghours: Date;
 
   @IsNotEmpty({ message: '交易类型不能为空' })
   @IsString()
