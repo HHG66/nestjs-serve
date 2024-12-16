@@ -11,7 +11,7 @@ import {
 import { BillService } from './bill.service';
 import { CreateBillDto, CreateBillListDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
-import { QueryBillDto, QueryDateRangeDto } from './dto/query-bill.dto';
+import { QueryBillDto, QueryDateDto, QueryDateRangeDto } from './dto/query-bill.dto';
 
 @Controller('bill')
 export class BillController {
@@ -32,6 +32,13 @@ export class BillController {
      console.log(query)
      return this.billService.getPeriodTimebill(query);
    }
+
+   @Get('getBalancePayments')
+   getBalancePayments(@Query() query: QueryDateDto) {
+      // console.log(query)
+      return this.billService.getBalancePayments(query.date);
+    }
+   
   
   // @Post('')
   // create(@Body() createBillDto: CreateBillDto) {

@@ -16,9 +16,6 @@ import { LifeCycle } from '@/lifeCycle';
 import { LoggerMiddleware } from '@/common/middleware/LoggerMiddleware';
 import { CustomWinstonLogger } from '@/utils/customWinstonLogger';
 import { LoggerModule } from '@/global/logger/logger.module';
-import { ResponseInterceptor } from './common/interceptors/response.interceptor';
-// import { UserModule } from '@/modules/user/user.module';
-import { IncometypeModule } from './modules/incometype/incometype.module';
 import * as mongoose from 'mongoose';
 
 @Module({

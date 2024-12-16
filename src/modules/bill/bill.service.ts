@@ -103,15 +103,45 @@ export class BillService {
   }
 
   async getPeriodTimebill(query) {
+    let billList = [];
     let result = await this.billModel
       .find({
         tradinghours: {
-          $lt: new Date(query.endDate),
-          $gt: new Date(query.startDate),
+          $lte: new Date(query.endDate),
+          $gte: new Date(query.startDate),
         },
       })
-      .exec();
-    console.log(result);
-    return ResponseDto.success(result)
+      .lean();
+    result.map((element) => {
+      billList.push({
+        ...element,
+        tradinghours: dayjs(element.tradinghours).format('YYYY-MM-DD H:mm:ss'),
+      });
+    });
+    return ResponseDto.success(billList);
+  }
+
+  async getBalancePayments(date) {
+    console.log(dayjs(date).format('YYYY-MM-DD'));
+    console.log(new Date(dayjs(date).format('YYYY-MM-DD H:mm:ss')));
+    console.log(new Date(dayjs(date).add(1, 'day').format('YYYY-MM-DD H:mm:ss')));
+    let dailyStatementList = [];
+
+    let result = await this.billModel
+      .find({
+        tradinghours: {
+          $gte: new Date(dayjs(date).format('YYYY-MM-DD H:mm:ss')),
+          $lte: new Date(dayjs(date).add(1, 'day').format('YYYY-MM-DD H:mm:ss')),
+        },
+      })
+      .lean();
+    result.map((element) => {
+      dailyStatementList.push({
+        ...element,
+        tradinghours: dayjs(element.tradinghours).format('YYYY-MM-DD H:mm:ss'),
+      });
+    });
+
+    return ResponseDto.success(dailyStatementList);
   }
 }

@@ -2,7 +2,7 @@ import { Module, forwardRef } from '@nestjs/common';
 import { LoginService } from './user.service';
 import { LoginController } from './user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UsrSchema } from '@/model/User.entities';
+import { UserSchema } from '@/model/User.entities';
 // import { AuthService } from 'src/modules/auth/auth.service';
 // import { AuthModule } from 'src/modules/auth/auth.module';
 import { JwtModule, JwtService } from '@nestjs/jwt';
@@ -18,7 +18,7 @@ import jwtConfig from '../../config/jwt.config';
     ConfigModule.forRoot({
       load: [jwtConfig],
     }),
-    MongooseModule.forFeature([{ name: 'User', schema: UsrSchema }]),
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

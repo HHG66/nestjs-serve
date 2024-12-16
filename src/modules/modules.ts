@@ -11,9 +11,10 @@ import { UserModule } from './user/user.module';
 import { BillModule } from './bill/bill.module';
 import { ConsumptiontypeModule } from './consumptiontype/consumptiontype.module';
 import { IncometypeModule } from './incometype/incometype.module';
+import { InvestmentModule } from './investment/investment.module';
 
 @Module({
-  imports: [UserModule, BillModule, ConsumptiontypeModule, IncometypeModule],
+  imports: [UserModule, BillModule, ConsumptiontypeModule, IncometypeModule,InvestmentModule],
   // 注意：通常不需要在这里导出（exports）这些模块，
   // 除非封装模块的使用者需要访问这些模块的提供者（providers）或控制器（controllers）
   // exports: [ArticleModule, UserModule, AuthModule], // 根据需要取消注释

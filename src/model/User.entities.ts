@@ -30,4 +30,4 @@ export class User {
   updataDate: Date;
 }
 
-export const UsrSchema = SchemaFactory.createForClass(User);
+export const UserSchema = SchemaFactory.createForClass(User);
