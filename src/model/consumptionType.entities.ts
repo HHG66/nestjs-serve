@@ -12,17 +12,7 @@ import * as mongoose from 'mongoose';
 
 export type ConsumptionTypeDocument = HydratedDocument<ConsumptionType>;
 
-// 定义一个内嵌的对象 Schema
-const ItemSchema = new mongoose.Schema({
-  label: {
-    type: String,
-    required: true,
-  },
-  value: {
-    type: String,
-    required: true,
-  },
-});
+
 @Schema()
 export class ConsumptionType {
   @Prop({ required: true, unique: true })

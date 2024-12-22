@@ -25,28 +25,34 @@ export class BillService {
     // @Inject(WINSTON_MODULE_PROVIDER)
     @Inject()
     private readonly logger: LoggingService // 注入 LoggingService
-  ) {}
+  ) { }
   async uploadBill(data: CreateBillListDto) {
     // console.log(typeof data);
     // console.log(data);
     // 使用 rawData 创建 CreateBillDto 实例并放入数组中
-    const bills: CreateBillDto[] = data.map((data) => {
-      const bill = new CreateBillDto();
-      bill.tradinghours = new Date(data.tradinghours);
-      bill.tradetype = data.tradetype;
-      bill.counterparty = data.counterparty;
-      bill.product = data.product;
-      bill.collectorbranch = data.collectorbranch;
-      bill.amount = parseFloat(data.amount.replace('¥', ''));
-      bill.patternpayment = data.patternpayment;
-      bill.currentstate = data.currentstate;
-      bill.trasactionid = data.trasactionid;
-      bill.merchantstoorder = data.merchantstoorder;
-      bill.remark = data.remark;
-      bill.updataDate = data.updataDate;
-      // bill.createdAt = new Date();
-      return bill;
-    });
+    let bills: CreateBillDto[] = []
+    try {
+      bills = data.map((data) => {
+        const bill = new CreateBillDto();
+        bill.tradinghours = new Date(data.tradinghours);
+        bill.tradetype = data.tradetype;
+        bill.counterparty = data.counterparty;
+        bill.product = data.product;
+        bill.collectorbranch = data.collectorbranch;
+        bill.amount = parseFloat(data.amount.replace('¥', ''));
+        bill.patternpayment = data.patternpayment;
+        bill.currentstate = data.currentstate;
+        bill.trasactionid = data.trasactionid;
+        bill.merchantstoorder = data.merchantstoorder;
+        bill.remark = data.remark;
+        bill.updataDate = data.updataDate;
+        // bill.createdAt = new Date();
+        return bill;
+      });
+    } catch (error) {
+      return ResponseDto.failureWithAutoTip('请导入正确格式的帐单')
+    }
+
     try {
       //ordered true遇到错误立即报错，false 跳过当条处理完毕后报错
       const createResult = await this.billModel.insertMany(bills, {

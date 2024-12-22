@@ -59,8 +59,8 @@ export class LoginService {
   //登录
   async login(userInfo: CreateUserDto) {
     const result = {
-      wrongPassword: () => (ResponseDto.error('账号或密码不正确')),
-      notFund: () => (ResponseDto.error('账号未注册')),
+      wrongPassword: () => (ResponseDto.failureWithAutoTip('账号或密码不正确')),
+      notFund: () => (ResponseDto.failureWithAutoTip('账号未注册')),
       handleSuccess: async () => (
            ResponseDto.success( {
             token: await this.authService.certificate(authResult.user),
