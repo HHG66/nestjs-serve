@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-12-20 17:16:41
- * @LastEditTime: 2024-12-22 12:32:58
+ * @LastEditTime: 2024-12-23 22:24:26
  * @LastEditors: 韩宏广
  * @FilePath: /financial-serve/src/model/Liabilities.entities.ts
  * @文件说明: 
@@ -84,7 +84,6 @@ export class Liabilities {
   currentPeriod: number //当前期数
 
   //下面为还款单的字段
-  @Prop()
   @Prop({ type: [loanRepaymentScheduleItem], default: () => [] }) 
   loanRepaymentSchedule: loanRepaymentScheduleItem[]
 

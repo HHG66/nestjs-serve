@@ -47,7 +47,7 @@ export class LiabilitiesService {
 
     let result = await this.liabilitiesModel.updateOne({
       _id: updateLiabilityDto._id,
-    }, { ...updateLiabilityDto, loanInitiationTime: new Date(updateLiabilityDto.loanInitiationTime),  }).lean()
+    }, { ...updateLiabilityDto, loanInitiationTime: new Date(updateLiabilityDto.loanInitiationTime), }).lean()
     // return 
     if (result.matchedCount == 1 && result.modifiedCount == 1) {
       return ResponseDto.successWithAutoTip({}, '修改成功')
@@ -55,7 +55,24 @@ export class LiabilitiesService {
     return ResponseDto.failureWithAutoTip('修改失败，请重试')
   }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} liability`;
-  // }
+  async getLoanInfo(id: string) {
+    let result = await this.liabilitiesModel.findOne({
+      _id: id
+    }).lean()
+    if (result) {
+      return ResponseDto.success(result)
+    }
+    return ResponseDto.success({})
+  }
+
+
+  async getLoanInfoList(id: string) {
+    let result = await this.liabilitiesModel.find({
+      _id: id
+    }).lean()
+    if (result.length > 0) {
+      return ResponseDto.success(result)
+    }
+    return ResponseDto.success([])
+  }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { LiabilitiesService } from './liabilities.service';
 import { CreateLiabilityDto } from './dto/create-liability.dto';
 import { UpdateLiabilityInfoDto } from './dto/update-liability.dto';
@@ -27,16 +27,18 @@ export class LiabilitiesController {
   editloaninfo(@Body() UpdateLiabilityDto:UpdateLiabilityInfoDto) {
     return this.liabilitiesService.editloaninfo(UpdateLiabilityDto);
   }
-  
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.liabilitiesService.findOne(+id);
-  // }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateLiabilityDto: UpdateLiabilityDto) {
-  //   return this.liabilitiesService.update(+id, updateLiabilityDto);
-  // }
+  //贷款基础信息
+  @Get('getLoanInfo')
+  getLoanInfo(@Query('_id') id: string) {
+    return this.liabilitiesService.getLoanInfo(id);
+  }
+
+  //还款计划列表
+  @Get('getLoanInfoList')
+  getLoanInfoList(@Query('_id') id: string) {
+    return this.liabilitiesService.getLoanInfoList(id);
+  }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {
