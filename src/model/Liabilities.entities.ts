@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-12-20 17:16:41
- * @LastEditTime: 2024-12-23 22:24:26
+ * @LastEditTime: 2024-12-24 23:32:22
  * @LastEditors: 韩宏广
  * @FilePath: /financial-serve/src/model/Liabilities.entities.ts
  * @文件说明: 

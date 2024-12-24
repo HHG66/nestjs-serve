@@ -75,4 +75,23 @@ export class LiabilitiesService {
     }
     return ResponseDto.success([])
   }
+
+  async updateLoanInfolist(createRepaymentScheduleDto) {
+    let updateInfo={
+      ...createRepaymentScheduleDto
+    }
+    delete updateInfo._id
+    let result = await this.liabilitiesModel.updateOne({
+      _id: createRepaymentScheduleDto._id
+    }, {
+      loanRepaymentSchedule:updateInfo
+    })
+
+    if (result.matchedCount == 1 && result.modifiedCount == 1) {
+      return ResponseDto.successWithAutoTip({}, '更新成功')
+    }
+
+    return ResponseDto.failureWithAutoTip('更新失败')
+
+  }
 }

@@ -4,7 +4,7 @@ export class CreateLiabilityDto {
   @IsNotEmpty({ message: '余额不能为空' })
   @IsNumber() 
   @IsPositive({ message: '余额必须为正数' })
-  balance: string; // 或者 number 类型
+  balance: number; // 或者 number 类型
  
   @IsNotEmpty({ message: '利息不能为空' })
   @IsNumber() 

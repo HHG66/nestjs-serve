@@ -2,10 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { LiabilitiesService } from './liabilities.service';
 import { CreateLiabilityDto } from './dto/create-liability.dto';
 import { UpdateLiabilityInfoDto } from './dto/update-liability.dto';
-
+import { CreateRepaymentScheduleDto } from './dto/create-repayment-schedule.dto'
 @Controller('liabilities')
 export class LiabilitiesController {
-  constructor(private readonly liabilitiesService: LiabilitiesService) {}
+  constructor(private readonly liabilitiesService: LiabilitiesService) { }
 
   @Post('createdLoanRecord')
   create(@Body() createLiabilityDto: CreateLiabilityDto) {
@@ -19,12 +19,12 @@ export class LiabilitiesController {
 
 
   @Post('deleteLoan')
-  deleteLoan(@Body('loanid') id:string) {
+  deleteLoan(@Body('loanid') id: string) {
     return this.liabilitiesService.deleteLoan(id);
   }
-  
+
   @Post('editloaninfo')
-  editloaninfo(@Body() UpdateLiabilityDto:UpdateLiabilityInfoDto) {
+  editloaninfo(@Body() UpdateLiabilityDto: UpdateLiabilityInfoDto) {
     return this.liabilitiesService.editloaninfo(UpdateLiabilityDto);
   }
 
@@ -40,8 +40,9 @@ export class LiabilitiesController {
     return this.liabilitiesService.getLoanInfoList(id);
   }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.liabilitiesService.remove(+id);
-  // }
+  @Post('updateLoanInfolist')
+  updateLoanInfolist(@Body() CreateRepaymentScheduleDto: CreateRepaymentScheduleDto) {
+    return this.liabilitiesService.updateLoanInfolist(CreateRepaymentScheduleDto);
+  }
+
 }

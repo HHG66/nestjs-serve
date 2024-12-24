@@ -3,7 +3,11 @@ import { PartialType } from '@nestjs/mapped-types';
 import { CreateInvestmentDto } from '../../investment/dto/create-investment.dto';
 import { IsDateString, IsNotEmpty, IsNumber, IsPositive, Min } from 'class-validator';
 
-export class CreateRepaymentSchedule extends PartialType(CreateInvestmentDto) {
+export class CreateRepaymentScheduleDto  {
+  @IsNotEmpty({ message: '期数不能为空' })
+  @IsNumber({ allowNaN: false, allowInfinity: false }, { message: '期数必须是数字' })
+  numberPeriods:number
+
   @IsNotEmpty({ message: '请选择需要修改的数据' })
   _id: string
 
@@ -41,7 +45,7 @@ export class CreateRepaymentSchedule extends PartialType(CreateInvestmentDto) {
   closingBalance: number; // 期终余额
 
   @IsNotEmpty({ message: '还款状态不能为空' })
-  @IsNumber({ allowNaN: false, allowInfinity: false }, { message: '还款状态必须是数字' })
-  @Min(0, { message: '还款状态必须是非负数字' }) // 根据实际状态编码，可能需要更具体的验证逻辑
-  repaymentStatus: number; // 状态
+  // @IsNumber({ allowNaN: false, allowInfinity: false }, { message: '还款状态必须是数字' })
+  // @Min(0, { message: '还款状态必须是非负数字' }) // 根据实际状态编码，可能需要更具体的验证逻辑
+  repaymentStatus: string; // 状态
 }
