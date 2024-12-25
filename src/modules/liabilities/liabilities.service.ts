@@ -108,9 +108,11 @@ export class LiabilitiesService {
       ...createRepaymentScheduleDto
     }
     delete updateInfo._id
+    //先查找存在的计划表
     let updataInfo=await this.liabilitiesModel.findOne({
       _id:createRepaymentScheduleDto._id
     }).lean()
+    //修改对应的计划表
     updateInfo= updataInfo.loanRepaymentSchedule.map((element=>{
         if(element.numberPeriods==updateInfo.numberPeriods){
           return {
@@ -119,6 +121,7 @@ export class LiabilitiesService {
         }
         return element
     }))
+    //更新数据库
     let result = await this.liabilitiesModel.updateOne({
       _id: createRepaymentScheduleDto._id
     }, {
