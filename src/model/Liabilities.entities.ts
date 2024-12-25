@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2024-12-20 17:16:41
- * @LastEditTime: 2024-12-24 23:32:22
+ * @LastEditTime: 2024-12-25 17:23:44
  * @LastEditors: 韩宏广
- * @FilePath: /financial-serve/src/model/Liabilities.entities.ts
+ * @FilePath: \financial-serve\src\model\Liabilities.entities.ts
  * @文件说明: 
  */
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
@@ -14,7 +14,10 @@ export type LiabilitiesDocument = HydratedDocument<Liabilities>;
 // // 定义一个内嵌的对象 Schema
 class loanRepaymentScheduleItem {
   @Prop()
-  repaymentDate: number //还款日期
+  numberPeriods: Date //期数
+
+  @Prop()
+  repaymentDate: Date //还款日期
 
   @Prop()
   initialBalance: number //期初余额
@@ -35,7 +38,7 @@ class loanRepaymentScheduleItem {
   closingBalance: number   //期终余额
 
   @Prop()
-  repaymentStatus: number   //状态
+  repaymentStatus: string   //状态
 
 }
 @Schema()
@@ -84,7 +87,7 @@ export class Liabilities {
   currentPeriod: number //当前期数
 
   //下面为还款单的字段
-  @Prop({ type: [loanRepaymentScheduleItem], default: () => [] }) 
+  @Prop({ type: [loanRepaymentScheduleItem], default: () => [] })
   loanRepaymentSchedule: loanRepaymentScheduleItem[]
 
 }

@@ -44,10 +44,31 @@ export class LiabilitiesService {
   }
 
   async editloaninfo(updateLiabilityDto: UpdateLiabilityInfoDto) {
+    //根据更新信息的总期数，生成对应长度的还款计划
+    let loanRepaymentSchedule = []
+
+    for (let i = 0; i < updateLiabilityDto.totalPeriod; i++) {
+      loanRepaymentSchedule.push(
+        {
+          numberPeriods:(i+1),
+          repaymentDate: new Date(updateLiabilityDto.loanInitiationTime),
+          initialBalance: 0,
+          repaymentScheduleAmt: 0,
+          additionalRepayment: 0,
+          accumulatedInterest: 0,
+          principal: 0,
+          closingBalance: 0,
+          repaymentStatus: '',
+        }
+      )
+    }
 
     let result = await this.liabilitiesModel.updateOne({
       _id: updateLiabilityDto._id,
-    }, { ...updateLiabilityDto, loanInitiationTime: new Date(updateLiabilityDto.loanInitiationTime), }).lean()
+    }, {
+      ...updateLiabilityDto, loanInitiationTime: new Date(updateLiabilityDto.loanInitiationTime),
+      loanRepaymentSchedule: loanRepaymentSchedule
+    }).lean()
     // return 
     if (result.matchedCount == 1 && result.modifiedCount == 1) {
       return ResponseDto.successWithAutoTip({}, '修改成功')
@@ -58,33 +79,50 @@ export class LiabilitiesService {
   async getLoanInfo(id: string) {
     let result = await this.liabilitiesModel.findOne({
       _id: id
+    }, {
+      loanRepaymentSchedule: 0
     }).lean()
     if (result) {
-      return ResponseDto.success(result)
+
+      return ResponseDto.success({
+        ...result,
+        loanInitiationTime: dayjs(result.loanInitiationTime).format('YYYY-MM-DD')
+      })
     }
     return ResponseDto.success({})
   }
 
 
   async getLoanInfoList(id: string) {
-    let result = await this.liabilitiesModel.find({
+    let result = await this.liabilitiesModel.findOne({
       _id: id
     }).lean()
-    if (result.length > 0) {
-      return ResponseDto.success(result)
+    if (result) {
+      return ResponseDto.success(result.loanRepaymentSchedule)
     }
     return ResponseDto.success([])
   }
 
   async updateLoanInfolist(createRepaymentScheduleDto) {
-    let updateInfo={
+    let updateInfo = {
       ...createRepaymentScheduleDto
     }
     delete updateInfo._id
+    let updataInfo=await this.liabilitiesModel.findOne({
+      _id:createRepaymentScheduleDto._id
+    }).lean()
+    updateInfo= updataInfo.loanRepaymentSchedule.map((element=>{
+        if(element.numberPeriods==updateInfo.numberPeriods){
+          return {
+            ...updateInfo
+          }
+        }
+        return element
+    }))
     let result = await this.liabilitiesModel.updateOne({
       _id: createRepaymentScheduleDto._id
     }, {
-      loanRepaymentSchedule:updateInfo
+      loanRepaymentSchedule: updateInfo
     })
 
     if (result.matchedCount == 1 && result.modifiedCount == 1) {

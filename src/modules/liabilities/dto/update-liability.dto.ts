@@ -14,7 +14,8 @@ class IsCurrentPeriodValidConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage(args: ValidationArguments) {
-    return 'Current period must be between 1 and total period';
+    // return 'Current period must be between 1 and total period ';
+    return '当前期数需要大于等于1小于总期数';
   }
 }
 
