@@ -1,3 +1,12 @@
+/*
+ * @Author: HHG
+ * @Date: 2024-12-25 16:19:29
+ * @LastEditTime: 2024-12-26 17:55:44
+ * @LastEditors: 韩宏广
+ * @FilePath: \financial-serve\src\modules\liabilities\liabilities.service.ts
+ * @文件说明: 
+ */
+
 import { Inject, Injectable, Res } from '@nestjs/common';
 import { CreateLiabilityDto } from './dto/create-liability.dto';
 import { UpdateLiabilityInfoDto } from './dto/update-liability.dto';
@@ -7,7 +16,7 @@ import { Liabilities, LiabilitiesDocument } from '@/model/Liabilities.entities';
 import { Model } from 'mongoose';
 import { ResponseDto } from '@/utils/response';
 import dayjs from 'dayjs';
-
+import { multiply, divide, add, pow, subtract } from 'mathjs'
 @Injectable()
 export class LiabilitiesService {
   constructor(
@@ -46,21 +55,35 @@ export class LiabilitiesService {
   async editloaninfo(updateLiabilityDto: UpdateLiabilityInfoDto) {
     //根据更新信息的总期数，生成对应长度的还款计划
     let loanRepaymentSchedule = []
+    //查找库中计划表
+    let { loanRepaymentSchedule: existLoanRepaymentScheduleList , ...loanInfo} = await this.liabilitiesModel.findOne({
+      _id: updateLiabilityDto._id
+    }).lean()
+
 
     for (let i = 0; i < updateLiabilityDto.totalPeriod; i++) {
-      loanRepaymentSchedule.push(
-        {
-          numberPeriods:(i+1),
-          repaymentDate: new Date(updateLiabilityDto.loanInitiationTime),
-          initialBalance: 0,
-          repaymentScheduleAmt: 0,
-          additionalRepayment: 0,
-          accumulatedInterest: 0,
-          principal: 0,
-          closingBalance: 0,
-          repaymentStatus: '',
-        }
-      )
+      //存在对应的还款期数信息
+      if (existLoanRepaymentScheduleList[i]) {
+        // console.log("existLoanRepaymentScheduleList[i]", existLoanRepaymentScheduleList[i]);
+        loanRepaymentSchedule.push(
+          existLoanRepaymentScheduleList[i]
+        )
+      } else {
+
+        loanRepaymentSchedule.push(
+          {
+            numberPeriods: (i + 1),
+            repaymentDate: new Date(updateLiabilityDto.loanInitiationTime),
+            initialBalance: 0,
+            repaymentScheduleAmt: RepaymentMethodCalculation.averageCapitalPlusInterest(loanInfo.amount, loanInfo.loanPeriod, loanInfo.interestRate,'month'),
+            additionalRepayment: 0,
+            accumulatedInterest: 0,
+            principal: 0,
+            closingBalance: 0,
+            repaymentStatus: '',
+          }
+        )
+      }
     }
 
     let result = await this.liabilitiesModel.updateOne({
@@ -98,7 +121,13 @@ export class LiabilitiesService {
       _id: id
     }).lean()
     if (result) {
-      return ResponseDto.success(result.loanRepaymentSchedule)
+      let loanRepaymentScheduleList = result.loanRepaymentSchedule.map((element) => {
+        return {
+          ...element,
+          repaymentDate: dayjs(element.repaymentDate).format('YYYY-MM-DD')
+        }
+      })
+      return ResponseDto.success(loanRepaymentScheduleList)
     }
     return ResponseDto.success([])
   }
@@ -109,17 +138,17 @@ export class LiabilitiesService {
     }
     delete updateInfo._id
     //先查找存在的计划表
-    let updataInfo=await this.liabilitiesModel.findOne({
-      _id:createRepaymentScheduleDto._id
+    let updataInfo = await this.liabilitiesModel.findOne({
+      _id: createRepaymentScheduleDto._id
     }).lean()
     //修改对应的计划表
-    updateInfo= updataInfo.loanRepaymentSchedule.map((element=>{
-        if(element.numberPeriods==updateInfo.numberPeriods){
-          return {
-            ...updateInfo
-          }
+    updateInfo = updataInfo.loanRepaymentSchedule.map((element => {
+      if (element.numberPeriods == updateInfo.numberPeriods) {
+        return {
+          ...updateInfo
         }
-        return element
+      }
+      return element
     }))
     //更新数据库
     let result = await this.liabilitiesModel.updateOne({
@@ -134,5 +163,39 @@ export class LiabilitiesService {
 
     return ResponseDto.failureWithAutoTip('更新失败')
 
+  }
+}
+
+function test() {
+
+}
+
+class RepaymentMethodCalculation {
+  /**
+   * @description: 等额本息还款法,每月还款金额
+   * @param {number}  principal 本金
+   * @param {number} loanPeriod  贷款期限
+   * @param {number} interestRate 利率(%)
+   * @param {string} machineCycle 计算周期，day year month
+   * @return {number}  周期还款金额
+   * @author: 韩宏广
+   */
+
+  static averageCapitalPlusInterest(principal, loanPeriod: number, interestRate, machineCycle) {
+    //day方式计算不常用，所以用月除以30来大概计算
+    let repaymentMonths = multiply(loanPeriod, 12)
+    console.log(repaymentMonths);
+    
+    //贷款本金(月)
+    let loanAmount = divide(principal, repaymentMonths)
+    // 月利率
+    let monthlyInterestRate = divide(divide(interestRate, 100), 12)
+    // 每月还款金额 = 贷款本金 *  (月利率 × (1+月利率) **还款月数/(1+月利率)**还款月数 -1) 。其中，月利率 = 年利率 ÷ 12，还款月数 = 贷款期限的月数（贷款年限 × 12）。
+
+    let molecule = multiply(monthlyInterestRate, pow(add(1, monthlyInterestRate), repaymentMonths))
+    let denominator = subtract(pow(add(1, monthlyInterestRate), repaymentMonths), 1)
+    let machineCycleAmt = divide(multiply(principal, molecule), denominator)
+    return machineCycleAmt
+    // multiply(multiply(principal,monthlyInterestRate),1+monthlyInterestRate)
   }
 }
