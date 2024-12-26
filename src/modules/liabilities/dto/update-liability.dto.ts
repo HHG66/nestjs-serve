@@ -41,12 +41,12 @@ export class UpdateLiabilityInfoDto extends PartialType(CreateLiabilityDto) {
 
   @IsNotEmpty()
   @IsNumber()
-  @Min(1,{message:'期数最低为1'}) // 期数至少为 1
+  @Min(1, { message: '期数最低为1' }) // 期数至少为 1
   totalPeriod: number; // 期数
 
   @IsNotEmpty()
   @IsNumber()
-  @Min(1,{message:'每年还款次数至少为1'}) // 每年还款次数至少为 1
+  @Min(1, { message: '每年还款次数至少为1' }) // 每年还款次数至少为 1
   paymentsPerYearNum: number; // 每年还款次数
 
   @IsNotEmpty()
@@ -58,6 +58,9 @@ export class UpdateLiabilityInfoDto extends PartialType(CreateLiabilityDto) {
   @Min(1) // 当前期数至少为 1
   @IsCurrentPeriodValid()  // 当前期数不能超过总期数（这里是一个动态最大值，需要自定义实现或使用其他方法）
   currentPeriod: number; // 当前期数
+
+  @IsNotEmpty()
+  isPlanSheetUpdated: boolean
 
 }
 
