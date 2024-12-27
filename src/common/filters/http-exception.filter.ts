@@ -6,7 +6,6 @@
  * @FilePath: \financial-serve\src\common\filters\http-exception.filter.ts
  * @文件说明:
  */
-import { getReqMainInfo } from '@/utils/getReqMainInfo';
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, Inject } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -35,10 +34,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     this.logger.error(msg);
     if ((message as any).statusCode == 400) {
       //400 是参数相关报错
-      if ((message as any).message == 'Unexpected end of JSON input') {
-        response.status(status).json(ResponseDto.failureWithAutoTip('入参格式错误'));
-        return;
-      }
+      // if ((message as any).message == 'Unexpected end of JSON input') {
+      //   response.status(status).json(ResponseDto.failureWithAutoTip('入参格式错误'));
+      //   return;
+      // }
       //如果入参校验不通过，只默认提示第一项
       if ((message as any).message.length > 0) {
         response.status(status).json(ResponseDto.failureWithAutoTip((message as any).message[0].toString()));

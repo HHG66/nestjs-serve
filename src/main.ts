@@ -15,12 +15,12 @@ import { CustomWinstonLogger } from './utils/customWinstonLogger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    snapshot: true,
+    // snapshot: true,
   });
   // const LoggerInstant = app.get(WINSTON_MODULE_PROVIDER) as Logger;
 
   //全局管道
-  app.useGlobalPipes(new ValidationPipe());
+  // app.useGlobalPipes(new ValidationPipe());
 
   //全局守卫
   // app.useGlobalGuards(JwtStrategy);
