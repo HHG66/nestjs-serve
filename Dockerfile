@@ -26,7 +26,7 @@ ENV NODE_ENV=production
 CMD ["npm", "run", "start"]  
   
 # 暴露3000端口  
-EXPOSE 3001
+EXPOSE 3000
 
 
 #RUN docker login --username=242151578700@qq.com registry.cn-wulanchabu.aliyuncs.com    
