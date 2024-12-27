@@ -7,7 +7,7 @@ import { LoggingService } from '@/global/logger/logging.service';
 import { Model } from 'mongoose';
 import { ResponseDto } from '@/utils/response';
 import dayjs from 'dayjs';
-import { add } from 'mathjs'
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class InvestmentService {
@@ -69,7 +69,7 @@ export class InvestmentService {
     //0 续存
     if (editDepositInfo.actiontype == "0") {
       renewInfo = { ...depositInfo }
-      renewInfo['amountDeposited'] = add(depositInfo.amountDeposited, editDepositInfo.amountDeposited);
+      renewInfo['amountDeposited'] =new BigNumber(depositInfo.amountDeposited).plus(editDepositInfo.amountDeposited).toNumber();
       renewInfo['expirationTime'] = new Date(editDepositInfo.expirationTime);
       renewInfo['interestRate'] = editDepositInfo.interestRate
     } else if (editDepositInfo.actiontype == "1") {//1 结息
@@ -122,11 +122,11 @@ export class InvestmentService {
     let currentDeposit = 0 //今年存入的存款，到期时间可能超过当年
     result.forEach(element => {
       if (element.depositState == '待结息') {
-        unmaturedDeposit = add(unmaturedDeposit, element.amountDeposited)
+        unmaturedDeposit =new BigNumber(unmaturedDeposit).plus(element.amountDeposited).toNumber()
       }
       let currentState = dayjs().isSame(element.expirationTime, 'year')
       if (element.depositState == '待结息' && currentState) {
-        currentDeposit = add(currentDeposit, element.amountDeposited)
+        currentDeposit =new BigNumber(currentDeposit).plus(element.amountDeposited).toNumber()
       }
 
     })
