@@ -23,7 +23,7 @@ RUN ls
 ENV NODE_ENV=production  
   
 # 启动应用程序  
-CMD ["npm", "run", "start"]  
+CMD ["npm", "run", "start:prod"]  
   
 # 暴露3000端口  
 EXPOSE 3000
