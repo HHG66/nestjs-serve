@@ -14,6 +14,7 @@ import { LoggingService } from './global/logger/logging.service';
 import { CustomWinstonLogger } from './utils/customWinstonLogger';
 
 async function bootstrap() {
+  console.log(process.env.NODE_ENV == 'development');
   const app = await NestFactory.create(AppModule, {
     // snapshot: true,
   });
