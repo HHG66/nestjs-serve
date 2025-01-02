@@ -50,6 +50,7 @@ import * as mongoose from 'mongoose';
           // Logger.error(`Failed to connect to MongoDB: ${error.message}`, error.stack);
           // console.log(`${error.message}`, error.stack);
           // console.log();
+          Logger.error(`MongoDB connection error: ${error.message}`, error.stack);
           CustomWinstonLogger.error(`${error.message}`, error.stack)
           // throw new Error('MongoDB connection failed');
         }

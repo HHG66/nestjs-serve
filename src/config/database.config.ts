@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2023-12-15 09:19:06
- * @LastEditTime: 2025-01-02 09:43:45
+ * @LastEditTime: 2025-01-02 16:20:23
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\config\database.config.ts
  * @文件说明:
