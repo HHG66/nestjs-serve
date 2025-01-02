@@ -18,7 +18,7 @@ export default () =>{
   : {
       // MONGODB_URI: 'mongodb://han:han1314.@192.168.0.101:27017/website-test',
       // MONGODB_URI: 'mongodb://han:han1314.@192.168.0.101:27017/financial',
-      MONGODB_URI: 'mongodb://han:han1314.@192.168.0.101:27017/financial',
+      MONGODB_URI: 'mongodb://han:han1314.@1.25.137.190:27018/financial',
       serverSelectionTimeoutMS: 50000,  // 设置超时时间
     };
     return config
