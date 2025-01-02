@@ -22,7 +22,8 @@ export class LifeCycle
   ) {}
   onModuleInit() {
     // console.log(`项目初始化完成`);
-    this.logger.log('项目初始化完成', "/");
+    this.logger.log(`项目初始化完成，环境:${process.env.NODE_ENV}`, "/");
+ 
     // console.log(connectionResult);
   }
 
