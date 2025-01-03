@@ -4,7 +4,7 @@ FROM node:18.17.1 AS builder
 # 设置工作目录
 WORKDIR /app
 
-# 复制 package.json 和 package-lock.json（确保这些文件的变化触发依赖安装）
+# 复制 package.json 和 package-lock.json
 COPY package*.json ./
 
 # 设置镜像的 npm registry
