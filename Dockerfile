@@ -31,7 +31,7 @@ COPY --from=builder /app/dist ./dist
 # COPY --from=builder /app/node_modules ./node_modules
 
 # 安装生产依赖
-RUN npm install --production
+RUN npm ci --production
 
 
 COPY package*.json ./
