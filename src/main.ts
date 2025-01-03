@@ -17,6 +17,7 @@ async function bootstrap() {
   console.log(process.env.NODE_ENV == 'development');
   const app = await NestFactory.create(AppModule, {
     // snapshot: true,
+    logger: ['log', 'warn', 'error'],
   });
   // const LoggerInstant = app.get(WINSTON_MODULE_PROVIDER) as Logger;
 
