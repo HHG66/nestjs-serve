@@ -39,7 +39,7 @@ RUN npm install pm2@5.4.3 -g
 ENV NODE_ENV=production
 
 # 启动生产环境应用（通过 PM2）
-CMD ["pm2", "start", "dist/main.js", "--name", "nestjs-app", "--watch"]
+CMD ["pm2-runtime", "start", "dist/main.js", "--name", "nestjs-app", "--watch"]
 
 # 暴露应用的端口
 EXPOSE 3001
