@@ -26,38 +26,45 @@ import * as mongoose from 'mongoose';
       load: [database, logconfig, jwtConfig],
     }),
     //数据库配置
+    // MongooseModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   useFactory: async (configService: ConfigService,CustomWinstonLogger:CustomWinstonLogger) => {
+    //     const uri = configService.get<string>('MONGODB_URI');
+    //     const serverSelectionTimeoutMS=configService.get<number>("serverSelectionTimeoutMS")
+    //     try {
+    //       // 连接MongoDB
+    //       const connection = await mongoose.connect(uri, {
+    //         serverSelectionTimeoutMS: serverSelectionTimeoutMS,  // 设置超时时间
+    //       }); 
+    
+    //       // 监听错误事件
+    //       connection.connection.on('error', (err) => {
+    //         Logger.error(`MongoDB connection error: ${err.message}`, err.stack);
+    //       });
+    
+    //       connection.connection.on('disconnected', () => {
+    //         Logger.warn('MongoDB disconnected');
+    //       });
+    
+    //     } catch (error) {
+    //       // Logger.error(`Failed to connect to MongoDB: ${error.message}`, error.stack);
+    //       // console.log(`${error.message}`, error.stack);
+    //       // console.log();
+    //       Logger.error(`MongoDB connection error: ${error.message}`, error.stack);
+    //       CustomWinstonLogger.error(`${error.message}`, error.stack)
+    //       // throw new Error('MongoDB connection failed');
+    //     }
+
+    //     return { uri,serverSelectionTimeoutMS };
+    //   },
+    //   inject: [ConfigService,CustomWinstonLogger],
+    // }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService,CustomWinstonLogger:CustomWinstonLogger) => {
-        const uri = configService.get<string>('MONGODB_URI');
-        const serverSelectionTimeoutMS=configService.get<number>("serverSelectionTimeoutMS")
-        try {
-          // 连接MongoDB
-          const connection = await mongoose.connect(uri, {
-            serverSelectionTimeoutMS: serverSelectionTimeoutMS,  // 设置超时时间
-          }); 
-    
-          // 监听错误事件
-          connection.connection.on('error', (err) => {
-            Logger.error(`MongoDB connection error: ${err.message}`, err.stack);
-          });
-    
-          connection.connection.on('disconnected', () => {
-            Logger.warn('MongoDB disconnected');
-          });
-    
-        } catch (error) {
-          // Logger.error(`Failed to connect to MongoDB: ${error.message}`, error.stack);
-          // console.log(`${error.message}`, error.stack);
-          // console.log();
-          Logger.error(`MongoDB connection error: ${error.message}`, error.stack);
-          CustomWinstonLogger.error(`${error.message}`, error.stack)
-          // throw new Error('MongoDB connection failed');
-        }
-
-        return { uri,serverSelectionTimeoutMS };
-      },
-      inject: [ConfigService,CustomWinstonLogger],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI')
+      }),
+      inject: [ConfigService],
     }),
     //引入模块
     Modules,
