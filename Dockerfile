@@ -8,7 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 
 # 安装依赖
-RUN npm i
+# RUN npm i
+RUN npm config set registry https://registry.npm.taobao.org && npm ci
+
 
 # 复制源代码到容器中
 COPY . .
