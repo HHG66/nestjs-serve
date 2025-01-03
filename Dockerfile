@@ -32,8 +32,8 @@ COPY package*.json ./
 ENV NODE_ENV=production
 
 # 启动生产环境应用
-# CMD ["node", "dist/main.js"]
-CMD ["npm", "run", "start:prod"]
+CMD ["node", "dist/main.js"]
+# CMD ["npm", "run", "start:prod"]
 
 
 # 暴露应用的端口
