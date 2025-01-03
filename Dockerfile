@@ -7,12 +7,12 @@ WORKDIR /app
 # 复制 package.json 和 package-lock.json 以便安装依赖
 # COPY package*.json ./
 
-# 设置镜像的 npm registry
-RUN npm config set registry https://registry.npmmirror.com
-
 
 # 复制源代码到容器中
 COPY . .
+
+# 设置镜像的 npm registry
+RUN npm config set registry https://registry.npmmirror.com
 
 # 安装依赖
 RUN npm ci
