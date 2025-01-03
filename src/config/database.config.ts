@@ -12,15 +12,15 @@ export default () =>{
  let config= process.env.NODE_ENV == 'development'
   ? {
       // MONGODB_URI: 'mongodb://han:han1314.@110.19.168.249:27018/website-test'
-      // MONGODB_URI: 'mongodb://127.0.0.1:27017/financial-dev',
-      MONGODB_URI: 'mongodb://han:han1314.@1.25.137.190:27018/financial',
+      MONGODB_URI: 'mongodb://127.0.0.1:27017/financial-dev',
+      // MONGODB_URI: 'mongodb://han:han1314.@1.25.137.190:27018/financial',
       serverSelectionTimeoutMS: 5000,  // 设置超时时间
     }
   : {
       // MONGODB_URI: 'mongodb://han:han1314.@192.168.0.101:27017/website-test',
       // MONGODB_URI: 'mongodb://han:han1314.@192.168.0.101:27017/financial',
       // MONGODB_URI: 'mongodb://han:han1314.@192.168.0.101:27017/financial',
-      MONGODB_URI: 'mongodb://han:han1314.@1.25.137.190:27018/financial',
+      MONGODB_URI: 'mongodb://han:han1314.@192.168.0.101:27017/financial',
       serverSelectionTimeoutMS: 5000,  // 设置超时时间
     };
     return config
