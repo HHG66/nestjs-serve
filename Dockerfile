@@ -25,12 +25,17 @@ FROM node:18.17.1-alpine
 # 设置工作目录
 WORKDIR /app
 
+RUN npm config set registry https://registry.npmmirror.com
 # 只复制构建后的产物和运行所需的文件
 COPY --from=builder /app/dist ./dist
 # COPY --from=builder /app/node_modules ./node_modules
+
+# 安装生产依赖
+RUN npm install --production
+
+
 COPY package*.json ./
 
-RUN npm config set registry https://registry.npmmirror.com
 # 安装 PM2
 RUN npm install pm2@5.4.3 -g
 
