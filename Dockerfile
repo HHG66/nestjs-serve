@@ -30,8 +30,9 @@ COPY --from=builder /app/dist ./dist
 # COPY --from=builder /app/node_modules ./node_modules
 COPY package*.json ./
 
+RUN npm config set registry https://registry.npmmirror.com
 # 安装 PM2
-RUN npm install pm2@latest -g
+RUN npm install pm2@5.4.3 -g
 
 # 定义环境变量
 ENV NODE_ENV=production
