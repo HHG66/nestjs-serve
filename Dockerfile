@@ -4,8 +4,8 @@ FROM node:18.17.1 AS builder
 # 设置工作目录
 WORKDIR /app
 
-# 复制源代码到容器中
-COPY . .
+# 复制 package.json 和 package-lock.json（确保这些文件的变化触发依赖安装）
+COPY package*.json ./
 
 # 设置镜像的 npm registry
 RUN npm config set registry https://registry.npmmirror.com
@@ -15,6 +15,10 @@ RUN npm install pm2@5.4.3 -g
 
 # 安装依赖
 RUN npm ci
+
+# 复制其他源代码
+COPY . .
+
 # 编译 NestJS 项目
 RUN npm run build
 
