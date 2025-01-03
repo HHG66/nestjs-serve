@@ -7,9 +7,11 @@ WORKDIR /app
 # 复制 package.json 和 package-lock.json 以便安装依赖
 COPY package*.json ./
 
+# 设置镜像的 npm registry
+RUN npm config set registry https://registry.npmmirror.com
+
 # 安装依赖
-# RUN npm i
-RUN npm config set registry https://registry.npmmirror.com && npm ci
+RUN npm ci
 
 # 复制源代码到容器中
 COPY . .
@@ -25,16 +27,17 @@ WORKDIR /app
 
 # 只复制构建后的产物和运行所需的文件
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
+# COPY --from=builder /app/node_modules ./node_modules
 COPY package*.json ./
+
+# 安装 PM2
+RUN npm install pm2@latest -g
 
 # 定义环境变量
 ENV NODE_ENV=production
 
-# 启动生产环境应用
-CMD ["node", "dist/main.js"]
-# CMD ["npm", "run", "start:prod"]
-
+# 启动生产环境应用（通过 PM2）
+CMD ["pm2", "start", "dist/main.js", "--name", "nestjs-app", "--watch"]
 
 # 暴露应用的端口
-EXPOSE 3000
+EXPOSE 3001
