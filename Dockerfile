@@ -28,11 +28,7 @@ WORKDIR /app
 RUN npm config set registry https://registry.npmmirror.com
 # 只复制构建后的产物和运行所需的文件
 COPY --from=builder /app/dist ./dist
-# COPY --from=builder /app/node_modules ./node_modules
-
-# 安装生产依赖
-RUN npm ci --production
-
+COPY --from=builder /app/node_modules ./node_modules
 
 COPY package*.json ./
 
