@@ -42,7 +42,7 @@ export class BillService {
         bill.amount = parseFloat(data.amount.replace('¥', ''));
         bill.patternpayment = data.patternpayment;
         bill.currentstate = data.currentstate;
-        bill.trasactionid = data.trasactionid;
+        bill.trasactionid = data.trasactionid.trim();
         bill.merchantstoorder = data.merchantstoorder;
         bill.remark = data.remark;
         bill.updataDate = data.updataDate;
@@ -74,18 +74,27 @@ export class BillService {
     }
   }
   async getdisposebill(query: QueryBillDto) {
-    let startOfDay = dayjs(query.importTime);
-    let endOfDay = dayjs(query.importTime).add(1, 'M');
-    console.log(startOfDay, endOfDay);
-    let queryData = {};
+    let startOfDay = dayjs(query.importTime).startOf('month');
+    let endOfDay = dayjs(query.importTime).endOf('month');
+    // console.log(startOfDay, endOfDay);
+    let queryData: any = {
+      ...query
+    };
+
     if (query.importTime !== undefined) {
-      queryData = {
-        createdAt: {
+      queryData.createdAt = {
           $gte: startOfDay,
-          $lt: endOfDay,
-        },
+          $lt:endOfDay ,
       };
     }
+    if (query.tradinghours !== undefined) {
+      queryData.tradinghours = {
+        $gte: dayjs(query.tradinghours).startOf('day'),
+        $lt: dayjs(query.tradinghours).endOf('day'),
+      };
+    }
+
+    delete queryData.importTime
     let result = await this.billModel
       .find(queryData)
       .skip((query.page - 1) * query.pageSize)

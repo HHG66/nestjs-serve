@@ -8,8 +8,12 @@ export class QueryBillDto {
   page:number
 
   pageSize:number
+  
+  tradinghours:string
 
 }
+
+
   
 
 export class QueryDateRangeDto {
