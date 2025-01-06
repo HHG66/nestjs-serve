@@ -60,7 +60,7 @@ export class BillService {
       });
       if (createResult.length >= 0) {
         // this.logger.log(`账单成功导入${createResult.length}条`);
-        return ResponseDto.success({}, undefined, `上传成功共导入${createResult.length}`);
+        return ResponseDto.successWithAutoTip({}, `上传成功共导入${createResult.length}`);
       }
     } catch (error) {
       // console.log(error);
@@ -122,7 +122,7 @@ export class BillService {
     let result = await this.billModel
       .find({
         tradinghours: {
-          $lte: new Date(query.endDate),
+          $lte: dayjs(query.endDate).endOf('month').toDate(),
           $gte: new Date(query.startDate),
         },
       })

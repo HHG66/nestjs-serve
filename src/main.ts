@@ -4,6 +4,8 @@ import { ValidationPipe } from '@nestjs/common';
 // import {  ValidationPipe } from '@/common/pipes/validation.pipe';
 import { ResponseInterceptor } from '@/common/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import * as express from 'express';
+import { json, urlencoded } from 'body-parser';
 import { Logger } from 'winston';
 import {
   WINSTON_MODULE_NEST_PROVIDER,
@@ -14,7 +16,7 @@ import { LoggingService } from './global/logger/logging.service';
 import { CustomWinstonLogger } from './utils/customWinstonLogger';
 
 async function bootstrap() {
-  console.log(process.env.NODE_ENV == 'development');
+  // console.log(process.env.NODE_ENV == 'development');
   const app = await NestFactory.create(AppModule, {
     // snapshot: true,
     logger: ['log', 'warn', 'error'],
@@ -39,7 +41,9 @@ async function bootstrap() {
 
   // app.useLogger(LoggerInstant);
   // app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
-
+  // 设置请求体的最大大小为 10MB
+  app.use(express.json({ limit: '10mb' }));
+  app.use(express.urlencoded({ limit: '10mb', extended: true }));
   await app.listen(3001);
 }
 

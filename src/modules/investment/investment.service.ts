@@ -35,7 +35,9 @@ export class InvestmentService {
     const queryData = {};
     let processedList = [];
 
-    query.depositName ? (queryData['depositName'] = query.depositName) : '';
+    query.depositName ? (queryData['depositName'] ={
+      $regex:new RegExp(query.depositName, 'i')
+    }) : '';
     query.expirationTime ? (queryData['expirationTime'] = {
       $gte: dayjs(query.expirationTime),
       $lt: dayjs(query.expirationTime).add(1, 'day'),
