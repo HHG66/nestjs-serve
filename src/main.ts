@@ -24,7 +24,7 @@ async function bootstrap() {
   // const LoggerInstant = app.get(WINSTON_MODULE_PROVIDER) as Logger;
 
   //全局管道
-  // app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe());
 
   //全局守卫
   // app.useGlobalGuards(JwtStrategy);
