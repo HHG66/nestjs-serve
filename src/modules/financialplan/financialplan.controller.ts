@@ -18,6 +18,14 @@ export class FinancialplanController {
     return this.financialplanService.getPlan(queryFinancialplanDto);
   }
 
+  @Post('updataPlan')
+  updataPlan(@Body() updateFinancialplanDto: UpdateFinancialplanDto) {
+    console.log(updateFinancialplanDto);
+    
+    return this.financialplanService.updataPlan(updateFinancialplanDto);
+  }
+  
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.financialplanService.findOne(+id);

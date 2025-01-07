@@ -16,6 +16,7 @@ export class FinancialplanService {
     @Inject()
     private readonly logger: LoggingService // 注入 LoggingService
   ) { }
+
   create(createFinancialplanDto: CreateFinancialplanDto) {
     let result = this.financialPlanModel.create(createFinancialplanDto)
     if (result) {
@@ -24,16 +25,31 @@ export class FinancialplanService {
     return ResponseDto.failureWithAutoTip('新增失败')
   }
 
- async getPlan(queryFinancialplanDto) {
-    let result =await this.financialPlanModel.find(queryFinancialplanDto).lean()
-    let formatDataList=result.map(res=>{
+  async getPlan(queryFinancialplanDto) {
+    let result = await this.financialPlanModel.find(queryFinancialplanDto).lean()
+    let formatDataList = result.map(res => {
       return {
         ...res,
-        planDate:dayjs(res.planDate).format('YYYY-MM-DD')
+        planDate: dayjs(res.planDate).format('YYYY-MM-DD')
       }
     })
     return ResponseDto.success(formatDataList)
   }
+
+
+  async updataPlan(updateFinancialplanDto: UpdateFinancialplanDto) {
+    let result = await this.financialPlanModel.updateOne({
+      _id: updateFinancialplanDto._id
+    }, updateFinancialplanDto)
+    if (result.matchedCount == 1 && result.modifiedCount == 1) {
+      return ResponseDto.successWithAutoTip({}, '更新成功')
+    }
+    return ResponseDto.failureWithAutoTip('更新失败')
+  }
+
+
+
+
 
   findOne(id: number) {
     return `This action returns a #${id} financialplan`;
