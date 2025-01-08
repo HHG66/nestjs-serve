@@ -26,7 +26,18 @@ export class FinancialplanService {
   }
 
   async getPlan(queryFinancialplanDto) {
-    let result = await this.financialPlanModel.find(queryFinancialplanDto).lean()
+    let queryData = {
+      ...queryFinancialplanDto
+    }
+    if (queryData.period === '-1') {
+      delete queryData.period
+    }
+    queryData.planDate = {
+      $gte: dayjs(queryData.planDate).startOf('month'),
+      $lt: dayjs(queryData.planDate).endOf('month'),
+    }
+
+    let result = await this.financialPlanModel.find(queryData).lean()
     let formatDataList = result.map(res => {
       return {
         ...res,
@@ -47,19 +58,23 @@ export class FinancialplanService {
     return ResponseDto.failureWithAutoTip('更新失败')
   }
 
-
-
-
-
-  findOne(id: number) {
-    return `This action returns a #${id} financialplan`;
+  async remove(_id: string) {
+    let result = await this.financialPlanModel.deleteOne({
+      _id
+    })
+    if (result.deletedCount == 1) {
+      return ResponseDto.successWithAutoTip(undefined, '删除成功');
+    } return ResponseDto.failureWithAutoTip('删除失败');
   }
 
-  update(id: number, updateFinancialplanDto: UpdateFinancialplanDto) {
-    return `This action updates a #${id} financialplan`;
-  }
 
-  remove(id: number) {
-    return `This action removes a #${id} financialplan`;
-  }
+  // findOne(id: number) {
+  //   return `This action returns a #${id} financialplan`;
+  // }
+
+  // update(id: number, updateFinancialplanDto: UpdateFinancialplanDto) {
+  //   return `This action updates a #${id} financialplan`;
+  // }
+
+
 }

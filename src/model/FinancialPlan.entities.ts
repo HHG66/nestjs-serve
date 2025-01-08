@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-27 20:06:12
- * @LastEditTime: 2025-01-07 16:14:12
+ * @LastEditTime: 2025-01-08 17:20:42
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\model\FinancialPlan.entities.ts
  * @文件说明:
@@ -27,7 +27,7 @@ export class FinancialPlan {
   period: string; //周期
 
   @Prop()
-  amount: string; //周期
+  amount: number; //周期
   // {
   //   value: 'einmal',
   //   label: '单次',
