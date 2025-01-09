@@ -14,9 +14,10 @@ import { IncometypeModule } from './incometype/incometype.module';
 import { InvestmentModule } from './investment/investment.module';
 import { LiabilitiesModule } from './liabilities/liabilities.module';
 import { FinancialplanModule } from './financialplan/financialplan.module';
+import { TimedTaskModule } from '@/common/timed-task/timed-task.module';
 
 @Module({
-  imports: [UserModule, BillModule, ConsumptiontypeModule, IncometypeModule, InvestmentModule, LiabilitiesModule, FinancialplanModule,],
+  imports: [UserModule, BillModule, ConsumptiontypeModule, IncometypeModule, InvestmentModule, LiabilitiesModule, FinancialplanModule,TimedTaskModule],
   // 注意：通常不需要在这里导出（exports）这些模块，
   // 除非封装模块的使用者需要访问这些模块的提供者（providers）或控制器（controllers）
   // exports: [ArticleModule, UserModule, AuthModule], // 根据需要取消注释

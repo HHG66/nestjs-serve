@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-27 20:06:12
- * @LastEditTime: 2025-01-08 17:20:42
+ * @LastEditTime: 2025-01-09 16:44:33
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\model\FinancialPlan.entities.ts
  * @文件说明:
@@ -22,6 +22,9 @@ export class FinancialPlan {
 
   @Prop()
   incomePattern: string; //收入方式
+  
+  @Prop()
+  expenditurePattern: string; //收入方式
 
   @Prop()
   period: string; //周期

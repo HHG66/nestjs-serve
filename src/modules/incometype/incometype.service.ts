@@ -4,7 +4,7 @@ import { UpdateIncometypeDto } from './dto/update-incometype.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { LoggingService } from '@/global/logger/logging.service';
 import { Model } from 'mongoose';
-import { IncomeTypeDocument } from '@/model/incomeType.entities';
+import { IncomeTypeDocument } from '@/model/IncomeType.entities';
 import { ResponseDto } from '@/utils/response';
 @Injectable()
 export class IncometypeService {

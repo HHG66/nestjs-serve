@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateConsumptiontypeDto, CreateConsumptiontypeModelDto } from './dto/create-consumptiontype.dto';
 import { UpdateConsumptionTypeDto } from './dto/update-consumptiontype.dto';
-import { ConsumptionTypeDocument } from '@/model/consumptionType.entities';
+import { ConsumptionTypeDocument } from '@/model/ConsumptionType.entities';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ResponseDto } from '@/utils/response';
