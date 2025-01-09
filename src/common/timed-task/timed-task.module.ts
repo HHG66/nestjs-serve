@@ -4,13 +4,13 @@ import { TimedTaskService } from './timed-task.service';
 import { FinancialPlanSchema } from '@/model/FinancialPlan.entities';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
-import { LoggingService } from '@/global/logger/logging.service';
+import { loggingStatic } from '@/global/logger/loggingStatic.service';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     MongooseModule.forFeature([{ name: 'FinancialPlan', schema: FinancialPlanSchema }]),  // 确保 FinancialPlan 被正确导入
   ],
-  providers: [TimedTaskService,LoggingService],
+  providers: [TimedTaskService,loggingStatic],
 })
 export class TimedTaskModule {}

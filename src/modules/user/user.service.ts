@@ -58,6 +58,7 @@ export class LoginService {
   }
   //登录
   async login(userInfo: CreateUserDto) {
+    this.logger.log('请求成功login')
     const result = {
       wrongPassword: () => (ResponseDto.failureWithAutoTip('账号或密码不正确')),
       notFund: () => (ResponseDto.failureWithAutoTip('账号未注册')),
