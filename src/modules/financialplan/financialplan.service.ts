@@ -7,6 +7,9 @@ import { FinancialPlanDocument } from '@/model/FinancialPlan.entities';
 import { Model } from 'mongoose';
 import { ResponseDto } from '@/utils/response';
 import dayjs from 'dayjs';
+import quarterOfYear from 'dayjs/plugin/quarterOfYear' // ES 2015
+dayjs.extend(quarterOfYear)
+
 
 @Injectable()
 export class FinancialplanService {
@@ -15,10 +18,22 @@ export class FinancialplanService {
     private financialPlanModel: Model<FinancialPlanDocument>,
     @Inject()
     private readonly logger: LoggingService // 注入 LoggingService
-  ) { }
+  ) { 
+  }
 
   create(createFinancialplanDto: CreateFinancialplanDto) {
-    let result = this.financialPlanModel.create(createFinancialplanDto)
+    //根据生效时间planDate生成对应周期范围
+    let periodCorrespondingField={
+      einmal:"day",
+      month:'month',
+      quarter:"quarter",
+      year:"year"
+    }
+    //预算周期开始时间
+    let periodStartDate = dayjs(createFinancialplanDto.planDate).startOf(periodCorrespondingField[createFinancialplanDto.period])
+    //预算周期截至时间
+    let periodEndDate = dayjs(createFinancialplanDto.planDate).endOf(periodCorrespondingField[createFinancialplanDto.period])
+    let result = this.financialPlanModel.create({ ...createFinancialplanDto, periodStartDate, periodEndDate })
     if (result) {
       return ResponseDto.successWithAutoTip({}, '新增成功')
     }

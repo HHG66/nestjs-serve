@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-27 20:06:12
- * @LastEditTime: 2025-01-09 16:44:33
+ * @LastEditTime: 2025-01-10 14:48:21
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\model\FinancialPlan.entities.ts
  * @文件说明:
@@ -18,19 +18,16 @@ export class FinancialPlan {
   planName: string;
 
   @Prop()
-  planDate: Date; //日期，按照周期得到对应的计划
+  planDate: Date; //日期，按照周期得到对应的计划,也是第一次预算生效时间
 
   @Prop()
   incomePattern: string; //收入方式
-  
+
   @Prop()
   expenditurePattern: string; //收入方式
 
   @Prop()
   period: string; //周期
-
-  @Prop()
-  amount: number; //周期
   // {
   //   value: 'einmal',
   //   label: '单次',
@@ -47,7 +44,15 @@ export class FinancialPlan {
   //   value: 'year',
   //   label: '年度',
   // },
-  
+  @Prop()
+  amount: number; //金额
+
+  @Prop()
+  periodStartDate: Date; //周期开始时间
+
+  @Prop()
+  periodEndDate: Date; //周期结束时间
+
   @Prop({ default: () => new Date() })
   createdAt: Date; //插入时间
 }

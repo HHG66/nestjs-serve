@@ -17,8 +17,6 @@ import { LoggerMiddleware } from '@/common/middleware/LoggerMiddleware';
 import { CustomWinstonLogger } from '@/utils/customWinstonLogger';
 import { LoggerModule } from '@/global/logger/logger.module';
 import * as mongoose from 'mongoose';
-import { ScheduleModule } from '@nestjs/schedule';
-import { TimedTaskModule } from './common/timed-task/timed-task.module';
 
 @Module({
   imports: [
