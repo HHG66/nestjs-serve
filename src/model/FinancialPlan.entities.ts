@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-27 20:06:12
- * @LastEditTime: 2025-01-10 14:48:21
+ * @LastEditTime: 2025-01-11 00:06:56
  * @LastEditors: 韩宏广
- * @FilePath: \financial-serve\src\model\FinancialPlan.entities.ts
+ * @FilePath: /financial-serve/src/model/FinancialPlan.entities.ts
  * @文件说明:
  */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -52,6 +52,9 @@ export class FinancialPlan {
 
   @Prop()
   periodEndDate: Date; //周期结束时间
+
+  @Prop()
+  associationType:mongoose.Types.ObjectId
 
   @Prop({ default: () => new Date() })
   createdAt: Date; //插入时间
