@@ -28,6 +28,11 @@ export class FinancialplanController {
     return this.financialplanService.remove(id);
   }
 
+  @Get('getDepositPlan')
+  getDepositPlan(@Body('_id') id: string) {
+    return this.financialplanService.getDepositPlan();
+  }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.financialplanService.findOne(+id);
