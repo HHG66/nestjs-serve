@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2024-12-16 17:13:10
- * @LastEditTime: 2025-01-13 21:22:31
+ * @LastEditTime: 2025-01-14 17:39:11
  * @LastEditors: 韩宏广
- * @FilePath: /financial-serve/src/model/Deposit.entities.ts
+ * @FilePath: \financial-serve\src\model\Deposit.entities.ts
  * @文件说明:
  */
 /*
@@ -42,8 +42,8 @@ export class Deposit {
 
   @Prop()
   depositType: string; //存款类型，关键字段根据类型有不同的规则和字段 
-  // 活期存款01、 定期存款02、定投存款03、目标存款04、
-
+  // 活期存款01、 定期存款02、零存整取03、目标存款04、存本取息05
+  // 零存整取：每月存入固定金额，到期一次性支取本息。
   @Prop()
   interest: number; //结息 到期利息，不到期或者未提前支取为空
 
@@ -78,6 +78,9 @@ class DepositRecords {
   @Prop()
   depositRecordAmount: number; //金额
 
+  @Prop()
+  remark: string;  
+  
 }
 
 

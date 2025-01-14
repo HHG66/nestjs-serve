@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { InvestmentService } from './investment.service';
 import { CreateInvestmentDto, EditDepositInfoDto, QueryDepositDto } from './dto/create-investment.dto';
 import { UpdateInvestmentDto } from './dto/update-investment.dto';
+import { CreatedDepositRecordDto } from './dto/dto';
 
 @Controller('investment')
 export class InvestmentController {
@@ -37,6 +38,15 @@ export class InvestmentController {
     return this.investmentService.depositSummary();
   }
   
+  @Post('createdDepositRecord')
+  createdDepositRecordApi(@Body() createdDepositRecordDto: CreatedDepositRecordDto) {
+    return this.investmentService.createdDepositRecordApi(createdDepositRecordDto);
+  }
+
+  @Get('getDepositRecordsList')
+  getDepositRecordsList(@Query('_id') _id:string) {
+    return this.investmentService.getDepositRecordsList(_id);
+  }
   
   
   // @Get(':id')

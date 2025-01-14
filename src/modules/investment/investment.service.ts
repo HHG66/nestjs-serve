@@ -8,6 +8,7 @@ import { Model } from 'mongoose';
 import { ResponseDto } from '@/utils/response';
 import dayjs from 'dayjs';
 import BigNumber from 'bignumber.js';
+import { CreatedDepositRecordDto } from './dto/dto';
 
 @Injectable()
 export class InvestmentService {
@@ -35,8 +36,8 @@ export class InvestmentService {
     const queryData = {};
     let processedList = [];
 
-    query.depositName ? (queryData['depositName'] ={
-      $regex:new RegExp(query.depositName, 'i')
+    query.depositName ? (queryData['depositName'] = {
+      $regex: new RegExp(query.depositName, 'i')
     }) : '';
     query.expirationTime ? (queryData['expirationTime'] = {
       $gte: dayjs(query.expirationTime),
@@ -53,7 +54,7 @@ export class InvestmentService {
     processedList = result.map((element) => {
       return {
         ...element,
-        expirationTime: dayjs(element.expirationTime).format('YYYY-MM-DD'),
+        expirationTime: element.expirationTime ? dayjs(element.expirationTime).format('YYYY-MM-DD') : '',
       };
     });
     return ResponseDto.success(processedList);
@@ -71,7 +72,7 @@ export class InvestmentService {
     //0 续存
     if (editDepositInfo.actiontype == "0") {
       renewInfo = { ...depositInfo }
-      renewInfo['amountDeposited'] =new BigNumber(depositInfo.amountDeposited).plus(editDepositInfo.amountDeposited).toNumber();
+      renewInfo['amountDeposited'] = new BigNumber(depositInfo.amountDeposited).plus(editDepositInfo.amountDeposited).toNumber();
       renewInfo['expirationTime'] = new Date(editDepositInfo.expirationTime);
       renewInfo['interestRate'] = editDepositInfo.interestRate
     } else if (editDepositInfo.actiontype == "1") {//1 结息
@@ -124,11 +125,11 @@ export class InvestmentService {
     let currentDeposit = 0 //今年存入的存款，到期时间可能超过当年
     result.forEach(element => {
       if (element.depositState == '待结息') {
-        unmaturedDeposit =new BigNumber(unmaturedDeposit).plus(element.amountDeposited).toNumber()
+        unmaturedDeposit = new BigNumber(unmaturedDeposit).plus(element.amountDeposited).toNumber()
       }
       let currentState = dayjs().isSame(element.expirationTime, 'year')
       if (element.depositState == '待结息' && currentState) {
-        currentDeposit =new BigNumber(currentDeposit).plus(element.amountDeposited).toNumber()
+        currentDeposit = new BigNumber(currentDeposit).plus(element.amountDeposited).toNumber()
       }
 
     })
@@ -136,9 +137,28 @@ export class InvestmentService {
   }
 
 
+  async createdDepositRecordApi(createdDepositRecordDto: CreatedDepositRecordDto) {
+    let depositRecord = {
+      ...createdDepositRecordDto
+    }
+    delete depositRecord._id
+    let result = await this.depositModel.updateOne({
+      _id: createdDepositRecordDto._id
+    }, {
+      $push: {
+        depositRecords: depositRecord
+      }
+    })
+    if (result.matchedCount == 1 && result.modifiedCount == 1) {
+      return ResponseDto.successWithAutoTip({}, '新增存款记录成功')
+    }
+    return ResponseDto.successWithAutoTip({}, '新增存款记录失败')
+  }
 
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} investment`;
-  // }
+  async getDepositRecordsList(_id: string) {
+    let result = await this.depositModel.findOne({
+      _id
+    });
+    return ResponseDto.success(result.depositRecords)
+  }
 }

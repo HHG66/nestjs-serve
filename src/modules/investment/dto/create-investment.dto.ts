@@ -1,6 +1,9 @@
-import { IsString, IsNotEmpty, IsDateString, ValidateNested, IsDate, IsNumber, isNumber, Allow, IsEmpty, isDateString } from 'class-validator';
+import { IsString, IsNotEmpty, IsDateString, ValidateNested, IsDate, IsNumber, isNumber, Allow, IsEmpty, isDateString, ValidatorConstraint, ValidationArguments, ValidatorConstraintInterface, registerDecorator, Validate } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsDateStringOrEmptyConstraint, IsNumberOrNullOrUndefinedConstraint } from '@/utils/validate';
+// 自定义验证器
 
+ 
 export class CreateInvestmentDto {
   @IsNotEmpty({ message: '存款名称不能为空' })
   depositName: string;
@@ -9,15 +12,18 @@ export class CreateInvestmentDto {
   @IsNumber({},{message:"本金请输入数字"})
   amountDeposited: number;
 
-  @IsNotEmpty({ message: '利率不能为空' })
-  @IsNumber({}, { message: '利率请输入数字' })
-  interestRate: number;
+  // @IsNotEmpty({ message: '利率不能为空' })
+  // @IsNumber({}, { message: '利率请输入数字' })
+  @Validate(IsNumberOrNullOrUndefinedConstraint)
+  interestRate: number | null | undefined;
+  // interestRate: number;
 
-  @IsNotEmpty({ message: '到期时间不能为空' })
-  @IsDateString()
+  // @IsNotEmpty({ message: '到期时间不能为空' })
+  // @IsDateString()
+  @Validate(IsDateStringOrEmptyConstraint)
   expirationTime: Date;
 
-  @IsString()
+  @IsString({message:'请输入正确备注'})
   remark: string;
 
   // @IsDateString({},{message:"请输入正确时间格式"})
