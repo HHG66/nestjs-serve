@@ -48,8 +48,8 @@ export class FinancialplanService {
       delete queryData.period
     }
     queryData.planDate = {
-      $gte: dayjs(queryData.planDate).startOf('month'),
-      $lt: dayjs(queryData.planDate).endOf('month'),
+      $gte: dayjs(queryData.planDate).startOf('year'),
+      $lt: dayjs(queryData.planDate).endOf('year'),
     }
 
     let result = await this.financialPlanModel.find(queryData).lean()

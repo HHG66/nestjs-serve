@@ -9,7 +9,7 @@ import { Model } from 'mongoose';
 export class financialPlanTaskService {
   constructor(
     @InjectModel('FinancialPlan') private financialPlanModel: Model<FinancialPlanDocument>,
-    // @Inject() 
+    @Inject() 
     private readonly logger: loggingStatic,
   ) { }
   @Cron('* * * * * *')
@@ -20,9 +20,21 @@ export class financialPlanTaskService {
     // console.log(await this.financialPlanModel.find().lean());
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  // @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  @Cron('* * * * * *')
   async handleCronTask() {
-    //查询预算日期是否超时超过设置状态，代表当前预算已执行
-    //执行之后
+    //查询计划单生效日期，当前日期大于生效日期，根据周期生成新的计划单
+   let planNameList= await  this.financialPlanModel.find()
+   let result= await  this.financialPlanModel.find(
+    {
+      planDate: {
+        $lte: new Date(),
+      },
+    }
+    ).sort({ planDate: 1 })
+    // this.logger.log(result)
+    // this.logger.log('---')
+    
+    
    }
 }
