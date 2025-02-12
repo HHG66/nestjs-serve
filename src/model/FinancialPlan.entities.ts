@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-27 20:06:12
- * @LastEditTime: 2025-01-11 00:06:56
+ * @LastEditTime: 2025-02-12 09:23:34
  * @LastEditors: 韩宏广
- * @FilePath: /financial-serve/src/model/FinancialPlan.entities.ts
+ * @FilePath: \financial-serve\src\model\FinancialPlan.entities.ts
  * @文件说明:
  */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -58,6 +58,10 @@ export class FinancialPlan {
 
   @Prop({ default: () => new Date() })
   createdAt: Date; //插入时间
+  
+  //周期生成的前一个id
+  @Prop()
+  previousId:string
 }
 
 export const FinancialPlanSchema = SchemaFactory.createForClass(FinancialPlan);

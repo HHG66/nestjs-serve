@@ -6,8 +6,9 @@ import { LoggingService } from '@/global/logger/logging.service';
 import { FinancialPlanDocument } from '@/model/FinancialPlan.entities';
 import { Model } from 'mongoose';
 import { ResponseDto } from '@/utils/response';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear' // ES 2015
+import { QueryFinancialplanDto } from './dto/query-financialplan.dto';
 dayjs.extend(quarterOfYear)
 
 
@@ -18,16 +19,16 @@ export class FinancialplanService {
     private financialPlanModel: Model<FinancialPlanDocument>,
     @Inject()
     private readonly logger: LoggingService // 注入 LoggingService
-  ) { 
+  ) {
   }
-  
+
   create(createFinancialplanDto: CreateFinancialplanDto) {
     //根据生效时间planDate生成对应周期范围
-    let periodCorrespondingField={
-      einmal:"day",
-      month:'month',
-      quarter:"quarter",
-      year:"year"
+    let periodCorrespondingField = {
+      einmal: "day",
+      month: 'month',
+      quarter: "quarter",
+      year: "year"
     }
     //预算周期开始时间
     let periodStartDate = dayjs(createFinancialplanDto.planDate).startOf(periodCorrespondingField[createFinancialplanDto.period])
@@ -40,8 +41,8 @@ export class FinancialplanService {
     return ResponseDto.failureWithAutoTip('新增失败')
   }
 
-  async getPlan(queryFinancialplanDto) {
-    let queryData = {
+  async getPlan(queryFinancialplanDto: QueryFinancialplanDto) {
+    let queryData: any = {
       ...queryFinancialplanDto
     }
     if (queryData.period === '-1') {
@@ -52,7 +53,18 @@ export class FinancialplanService {
       $lt: dayjs(queryData.planDate).endOf('year'),
     }
 
-    let result = await this.financialPlanModel.find(queryData).lean()
+    // let result = await this.financialPlanModel.find(queryData).lean()
+    let result = await this.financialPlanModel.aggregate([
+      { $sort: { planDate: -1 } },
+       {
+        $group: {
+          _id: "$planName",
+          doc: { $first: "$$ROOT" }// $first 运算符，从每组文档中获取排序后（$sort 阶段）的第一个文档
+        }
+      },
+      { $replaceRoot: { newRoot: "$doc" } },//替换根文档
+    ]).exec()
+    
     let formatDataList = result.map(res => {
       return {
         ...res,
@@ -83,8 +95,8 @@ export class FinancialplanService {
   }
 
 
-  async getDepositPlan(){
-    
+  async getDepositPlan() {
+
   }
 
   // findOne(id: number) {
