@@ -11,7 +11,7 @@ import moment from 'moment';
 @Injectable()
 export class ConsumptiontypeService {
   constructor(
-    @InjectModel('consumptionType')
+    @InjectModel('ConsumptionType')
     private consumptionTypeModel: Model<ConsumptionTypeDocument>,
     @Inject()
     private readonly logger: LoggingService // 注入 LoggingService

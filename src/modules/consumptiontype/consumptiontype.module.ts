@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConsumptionTypeSchema } from '@/model/ConsumptionType.entities';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'consumptionType', schema: ConsumptionTypeSchema }])],
+  imports: [MongooseModule.forFeature([{ name: 'ConsumptionType', schema: ConsumptionTypeSchema }])],
   controllers: [ConsumptiontypeController],
   providers: [ConsumptiontypeService],
 })
