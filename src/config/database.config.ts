@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2023-12-15 09:19:06
- * @LastEditTime: 2025-02-23 20:00:01
+ * @LastEditTime: 2025-02-23 20:10:11
  * @LastEditors: 韩宏广
  * @FilePath: /financial-serve/src/config/database.config.ts
  * @文件说明:
@@ -26,7 +26,7 @@ export default () =>{
       MONGODB_URI: 'mongodb://192.168.0.101:27017/financial',
 
       
-      serverSelectionTimeoutMS: 15000,  // 设置超时时间
+      serverSelectionTimeoutMS: 50000,  // 设置超时时间
     };
     return config
 }
