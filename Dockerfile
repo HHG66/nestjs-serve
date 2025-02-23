@@ -31,8 +31,9 @@ ENV NODE_ENV=production
 
 # CMD ["pm2-runtime", "start:prod", "dist/main.js", "--name", "nestjs-app"]
 
-RUN npm run start:prod
 
 
 # 暴露应用的端口
 EXPOSE 3001
+
+CMD ["node", "dist/main.js"]
