@@ -28,36 +28,25 @@ import * as mongoose from 'mongoose';
     //数据库配置
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService,CustomWinstonLogger:CustomWinstonLogger) => {
+      useFactory: async (configService: ConfigService) => {
         const uri = configService.get<string>('MONGODB_URI');
-        const serverSelectionTimeoutMS=configService.get<number>("serverSelectionTimeoutMS")
-        try {
-          // 连接MongoDB
-          const connection = await mongoose.connect(uri, {
-            serverSelectionTimeoutMS: serverSelectionTimeoutMS,  // 设置超时时间
-          }); 
+        const serverSelectionTimeoutMS = configService.get<number>('serverSelectionTimeoutMS');
+        mongoose.connect(uri);
+        // 全局监听连接事件（直接通过 mongoose.connection）
+        // mongoose.connection.on('error', (err) => {
+        //   Logger.error(`MongoDB connection error: ${err.message}`, err.stack);
+        // });
     
-          // 监听错误事件
-          connection.connection.on('error', (err) => {
-            Logger.error(`MongoDB connection error: ${err.message}`, err.stack);
-          });
+        // mongoose.connection.on('disconnected', () => {
+        //   Logger.warn('MongoDB disconnected');
+        // });
     
-          connection.connection.on('disconnected', () => {
-            Logger.warn('MongoDB disconnected');
-          });
-    
-        } catch (error) {
-          // Logger.error(`Failed to connect to MongoDB: ${error.message}`, error.stack);
-          // console.log(`${error.message}`, error.stack);
-          // console.log();
-          Logger.error(`MongoDB connection error: ${error.message}`, error.stack);
-          CustomWinstonLogger.error(`${error.message}`, error.stack)
-          // throw new Error('MongoDB connection failed');
-        }
-
-        return { uri,serverSelectionTimeoutMS };
+        return {
+          uri,
+          serverSelectionTimeoutMS
+        };
       },
-      inject: [ConfigService,CustomWinstonLogger],
+      inject: [ConfigService],
     }),
     // MongooseModule.forRootAsync({
     //   imports: [ConfigModule],
