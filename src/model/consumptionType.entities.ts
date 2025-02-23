@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-27 20:06:12
- * @LastEditTime: 2024-12-01 16:25:44
+ * @LastEditTime: 2025-02-23 11:35:54
  * @LastEditors: 韩宏广
- * @FilePath: \financial-serve\src\entities\consumptionType.entities.ts
+ * @FilePath: \financial-serve\src\model\ConsumptionType.entities.ts
  * @文件说明:
  */
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -24,7 +24,7 @@ export class ConsumptionType {
         label: { type: String },
         value: { type: String },
         color: { type: String },
-        _id:false
+        _id: false
       },
     ])
   )
@@ -38,5 +38,4 @@ export class ConsumptionType {
   updataDate: Date;
 }
 
-export const ConsumptionTypeSchema =
-  SchemaFactory.createForClass(ConsumptionType);
+export const ConsumptionTypeSchema = SchemaFactory.createForClass(ConsumptionType);
