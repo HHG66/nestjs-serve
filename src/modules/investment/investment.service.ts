@@ -9,6 +9,7 @@ import { ResponseDto } from '@/utils/response';
 import dayjs from 'dayjs';
 import BigNumber from 'bignumber.js';
 import { CreatedDepositRecordDto } from './dto/dto';
+import { depositRecordIdDto } from './dto/investment-info.dto';
 
 @Injectable()
 export class InvestmentService {
@@ -155,10 +156,22 @@ export class InvestmentService {
     return ResponseDto.successWithAutoTip({}, '新增存款记录失败')
   }
 
-  async getDepositRecordsList(_id: string) {
+  async getDepositRecordsList(_id: depositRecordIdDto) {
     let result = await this.depositModel.findOne({
       _id
     });
-    return ResponseDto.success(result.depositRecords)
+    if (result.depositType == '02') {
+      return ResponseDto.success([{
+        depositDate: dayjs(result.dateCommenced).format('YYYY-MM-DD'),
+        depositRecordAmount: result.amountDeposited,
+        remark: result.remark,
+        galeOfInterest:new BigNumber(result.amountDeposited).multipliedBy(new BigNumber(result.interestRate).dividedBy(100))  //到期利息 本金*利率
+      }])
+    }
+    try {
+      return ResponseDto.success(result.depositRecords)
+    } catch (error) {
+      return ResponseDto.success([])
+    }
   }
 }

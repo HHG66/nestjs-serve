@@ -3,6 +3,7 @@ import { InvestmentService } from './investment.service';
 import { CreateInvestmentDto, EditDepositInfoDto, QueryDepositDto } from './dto/create-investment.dto';
 import { UpdateInvestmentDto } from './dto/update-investment.dto';
 import { CreatedDepositRecordDto } from './dto/dto';
+import { depositRecordIdDto } from './dto/investment-info.dto';
 
 @Controller('investment')
 export class InvestmentController {
@@ -44,7 +45,7 @@ export class InvestmentController {
   }
 
   @Get('getDepositRecordsList')
-  getDepositRecordsList(@Query('_id') _id:string) {
+  getDepositRecordsList(@Query() _id:depositRecordIdDto) {
     return this.investmentService.getDepositRecordsList(_id);
   }
   

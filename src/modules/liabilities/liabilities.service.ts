@@ -1,9 +1,9 @@
 /*
  * @Author: HHG
  * @Date: 2024-12-25 16:19:29
- * @LastEditTime: 2024-12-26 22:40:16
+ * @LastEditTime: 2025-02-23 10:48:20
  * @LastEditors: 韩宏广
- * @FilePath: /financial-serve/src/modules/liabilities/liabilities.service.ts
+ * @FilePath: \financial-serve\src\modules\liabilities\liabilities.service.ts
  * @文件说明: 
  */
 
@@ -95,6 +95,9 @@ export class LiabilitiesService {
     }, uptaInfo).lean()
     // return 
     if (result.matchedCount == 1 && result.modifiedCount == 1) {
+      return ResponseDto.successWithAutoTip({}, '修改成功')
+    }
+    if (result.matchedCount == 1 && result.modifiedCount == 0) {
       return ResponseDto.successWithAutoTip({}, '修改成功')
     }
     return ResponseDto.failureWithAutoTip('修改失败，请重试')
