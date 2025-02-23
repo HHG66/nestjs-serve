@@ -14,6 +14,8 @@ RUN npm config set registry https://registry.npmmirror.com
 RUN npm install pm2@5.4.3 -g
 
 # 安装依赖
+RUN npm install
+# 安装依赖
 RUN npm ci
 
 # 复制其他源代码
