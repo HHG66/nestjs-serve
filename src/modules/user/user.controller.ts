@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user';
 import { LoginService } from './user.service';
-import { Public } from 'src/common/decorators/isPublic.decorator';
+import { Public } from '@/common/decorators/isPublic.decorator';
 
 @Controller()
 export class LoginController {
