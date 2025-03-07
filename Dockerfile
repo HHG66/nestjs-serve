@@ -7,6 +7,9 @@ WORKDIR /app
 # 复制 package.json 和 package-lock.json
 COPY package*.json ./
 
+# 复制其他源代码
+COPY . .
+
 # 设置镜像的 npm registry
 RUN npm config set registry https://registry.npmmirror.com
 
@@ -18,8 +21,6 @@ RUN npm install
 # 安装依赖
 # RUN npm ci
 
-# 复制其他源代码
-COPY . .
 
 # 编译 NestJS 项目
 RUN npm run build
