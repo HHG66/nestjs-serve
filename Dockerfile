@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # 复制其他源代码
-COPY . .
+COPY dist ./
 
 # 设置镜像的 npm registry
 RUN npm config set registry https://registry.npmmirror.com
