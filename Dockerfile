@@ -7,29 +7,32 @@ WORKDIR /app
 # 复制 package.json 和 package-lock.json
 COPY package*.json ./
 
+# 安装依赖
+RUN npm install
+
+# 复制其他源代码
+COPY dist ./
+
 # 设置镜像的 npm registry
 RUN npm config set registry https://registry.npmmirror.com
 
 # 安装 PM2
 RUN npm install pm2@5.4.3 -g
 
-# 安装依赖
-RUN npm install
+
 # 安装依赖
 # RUN npm ci
 
-# 复制其他源代码
-COPY . .
 
 # 编译 NestJS 项目
-RUN npm run build
+# RUN npm run build
 
 # 定义环境变量
 ENV NODE_ENV=production
 
 # 启动生产环境应用（通过 PM2）
 
-CMD ["pm2-runtime", "start", "dist/main.js", "--name", "nestjs-app"]
+CMD ["pm2-runtime", "start", "./main.js", "--name", "nestjs-app"]
 
 
 
