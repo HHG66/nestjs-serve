@@ -21,35 +21,46 @@ export class BillService {
     // private readonly logger: CustomWinstonLogger,
     @InjectModel('Bill')
     private billModel: Model<BillDocument>,
+    @InjectModel('BillingBatch')
+    private billingBatchModel: Model<BillDocument>,
     // @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     // @Inject(WINSTON_MODULE_PROVIDER)
     @Inject()
     private readonly logger: LoggingService // 注入 LoggingService
   ) { }
-  async uploadBill(data: CreateBillListDto) {
+  async uploadBill(requestBody: CreateBillListDto) {
     // console.log(typeof data);
     // console.log(data);
     // 使用 rawData 创建 CreateBillDto 实例并放入数组中
     let bills: CreateBillDto[] = []
     try {
-      bills = data.map((data) => {
+      bills = requestBody.datas.map((data) => {
         const bill = new CreateBillDto();
         bill.tradinghours = new Date(data.tradinghours);
         bill.tradetype = data.tradetype;
         bill.counterparty = data.counterparty;
         bill.product = data.product;
         bill.collectorbranch = data.collectorbranch;
-        bill.amount = parseFloat(data.amount.replace('¥', ''));
+        bill.amount = parseFloat((data.amount as string).replace('¥', ''));
         bill.patternpayment = data.patternpayment;
         bill.currentstate = data.currentstate;
         bill.trasactionid = data.trasactionid.trim();
         bill.merchantstoorder = data.merchantstoorder;
         bill.remark = data.remark;
         bill.updataDate = data.updataDate;
-        // bill.createdAt = new Date();
+        bill.billType = requestBody.billType;
+        //支付宝
+        bill.transactionCreationTime = data.transactionCreationTime ? new Date(data.transactionCreationTime) : null;
+        bill.lastModifiedTime = data.lastModifiedTime ? new Date(data.lastModifiedTime) : null;
+        bill.sourceTransaction = data.sourceTransaction
+        bill.payPattern = data.payPattern
+        bill.tradingStatus = data.tradingStatus
+        bill.successfulRefund = data.successfulRefund
+        bill.fundStatus = data.fundStatus
         return bill;
       });
     } catch (error) {
+      console.log(error);
       return ResponseDto.failureWithAutoTip('请导入正确格式的帐单')
     }
 
@@ -59,15 +70,22 @@ export class BillService {
         ordered: false,
       });
       if (createResult.length >= 0) {
-        // this.logger.log(`账单成功导入${createResult.length}条`);
+        //生成账单批次
+        if (createResult.length > 0) {
+          await this.createBatchBill(requestBody.billType, createResult.length, createResult.map(doc => doc._id.toString()));
+          console.log(' createResult.map(doc => doc._id.toString()) ', createResult.map(doc => doc._id.toString()));
+        }
         return ResponseDto.successWithAutoTip({}, `上传成功共导入${createResult.length}`);
       }
     } catch (error) {
       // console.log(error);
-      // console.log(error.writeErrors.length);
-      // console.log(error.results.length);
+      this.logger.error('导入错误：' + error)
+      const insertedIds = error.insertedDocs?.map(doc => doc._id.toString()) || [];
+      if (insertedIds.length > 0) {
+        // 传入ID数组而不是数量
+        await this.createBatchBill(requestBody.billType, error.insertedDocs.length, insertedIds);
+      }
       this.logger.log(
-        // `共计${error.results.length}条账单的交易id重复,导入成功${bills.length - error.results.length}条`
         `共计${bills.length}条账单，成功导入${error.insertedDocs.length}条，重复数据${error.writeErrors.length}条`
       );
       return ResponseDto.successWithAutoTip({}, `共计${bills.length}条账单，成功导入${error.insertedDocs.length}条，重复数据${error.writeErrors.length}条`);
@@ -83,8 +101,8 @@ export class BillService {
 
     if (query.importTime !== undefined) {
       queryData.createdAt = {
-          $gte: startOfDay,
-          $lt:endOfDay ,
+        $gte: startOfDay,
+        $lt: endOfDay,
       };
     }
     if (query.tradinghours !== undefined) {
@@ -158,5 +176,15 @@ export class BillService {
     });
 
     return ResponseDto.success(dailyStatementList);
+  }
+
+  //创建批次账单
+  private async createBatchBill(billType, businesstotal, billidList) {
+    this.billingBatchModel.create({
+      importtime: new Date(),
+      billtype: billType,
+      businesstotal: businesstotal,
+      billidList: billidList,
+    });
   }
 }

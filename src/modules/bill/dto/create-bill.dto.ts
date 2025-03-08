@@ -7,7 +7,42 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class CreateBillDto {
+export class AliPayBillDto {
+  @IsNotEmpty({ message: '交易创建时间不能为空' })
+  @IsString()
+  transactionCreationTime: Date;
+
+
+  @IsNotEmpty({ message: '最近修改时间不能为空' })
+  @IsString()
+  lastModifiedTime: Date;
+
+  @IsNotEmpty({ message: '交易来源地不能为空' })
+  @IsString()
+  sourceTransaction: string;
+
+  @IsNotEmpty({ message: '类型不能为空' })
+  @IsString()
+  payPattern: string;
+
+  @IsNotEmpty({ message: '交易状态不能为空' })
+  @IsString()
+  tradingStatus: string;
+
+  @IsNotEmpty({ message: '服务费（元）不能为空' })
+  @IsString()
+  serviceCharge: string;
+
+  @IsNotEmpty({ message: '成功退款（元）不能为空' })
+  @IsString()
+  successfulRefund: string;
+
+  @IsNotEmpty({ message: '资金状态不能为空' })
+  @IsString()
+  fundStatus: string;
+}
+
+export class CreateBillDto extends AliPayBillDto {
   map(arg0: (data: any) => CreateBillDto): CreateBillDto[] {
     throw new Error('Method not implemented.');
   }
@@ -51,6 +86,10 @@ export class CreateBillDto {
   @IsString()
   merchantstoorder: string;
 
+  @IsNotEmpty({ message: '账单类型' })
+  @IsString()
+  billType: string;
+
   @IsString()
   remark: string;
 
@@ -58,12 +97,19 @@ export class CreateBillDto {
   updataDate: Date;
 
   createdAt:any
+  
 }
+
+
 export class CreateBillListDto {
-  map(arg0: (data: any) => CreateBillDto): CreateBillDto[] {
-    throw new Error('Method not implemented.');
-  }
-  @Type(() => CreateBillDto)
-  @ValidateNested({ each: true })
-  bills: CreateBillDto[];
+  //暂时取消校验
+  // map(arg0: (data: any) => CreateBillDto): CreateBillDto[] {
+  //   throw new Error('Method not implemented.');
+  // }
+  // @Type(() => CreateBillDto)
+  // @ValidateNested({ each: true })
+  datas: CreateBillDto[];
+
+  @IsString()
+  billType: string;
 }

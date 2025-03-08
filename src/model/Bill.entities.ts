@@ -27,12 +27,39 @@ export class Bill {
   @Prop()
   merchantstoorder: string; //商户单号
   @Prop()
+  billType: string; //账单类型，微信、支付宝
+  @Prop()
   remark: string; //备注
   @Prop({ default:()=>new Date() })
   createdAt:Date
   //插入时间
   @Prop()
   updataDate: Date;
+
+  //交易创建时间
+  @Prop()
+  transactionCreationTime: Date;
+
+  @Prop()
+  lastModifiedTime: Date;//最近修改时间
+
+  @Prop()
+  sourceTransaction: string;   //交易来源地
+ 
+  @Prop()
+  payPattern: string;  //类型 
+
+  @Prop()
+  tradingStatus: string; //交易状态
+
+  @Prop()
+  serviceCharge: string; //服务费（元）
+  
+  @Prop()
+  successfulRefund: string;  //成功退款（元）
+
+  @Prop()
+  fundStatus: string;  //资金状态
 
 }
 
