@@ -17,6 +17,7 @@ import { LoggerMiddleware } from '@/common/middleware/LoggerMiddleware';
 import { CustomWinstonLogger } from '@/utils/customWinstonLogger';
 import { LoggerModule } from '@/global/logger/logger.module';
 import * as mongoose from 'mongoose';
+import { loggingStatic } from './global/logger/loggingStatic.service';
 
 @Module({
   imports: [
@@ -28,15 +29,34 @@ import * as mongoose from 'mongoose';
     //数据库配置
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
+      useFactory: async (configService: ConfigService,CustomWinstonLogger:CustomWinstonLogger) => {
+        const Logger = new loggingStatic(CustomWinstonLogger);
         const uri = configService.get<string>('MONGODB_URI');
         const serverSelectionTimeoutMS = configService.get<number>('serverSelectionTimeoutMS');
-        mongoose.connect(uri);
-        // 全局监听连接事件（直接通过 mongoose.connection）
-        // mongoose.connection.on('error', (err) => {
-        //   Logger.error(`MongoDB connection error: ${err.message}`, err.stack);
-        // });
-    
+       try {
+          // 尝试连接 MongoDB
+          await mongoose.connect(uri, { serverSelectionTimeoutMS });
+ 
+          // 确保连接对象可用
+          mongoose.connection.on('error', (err) => {
+            Logger.error(`MongoDB connection error: ${err.message}`, err.stack);
+          });
+ 
+          mongoose.connection.on('disconnected', () => {
+            Logger.warn('MongoDB disconnected');
+          });
+ 
+          mongoose.connection.on('connected', () => {
+            Logger.log('MongoDB connected successfully');
+          });
+ 
+          mongoose.connection.on('reconnected', () => {
+            Logger.log('MongoDB reconnected');
+          });
+        } catch (error) {
+          Logger.error(`MongoDB connection error:请检查数据配置信息 ${error.message}`, error.stack);
+          throw error; // 抛出错误以便上层捕获
+        }
         // mongoose.connection.on('disconnected', () => {
         //   Logger.warn('MongoDB disconnected');
         // });
@@ -46,7 +66,7 @@ import * as mongoose from 'mongoose';
           serverSelectionTimeoutMS
         };
       },
-      inject: [ConfigService],
+      inject: [ConfigService,CustomWinstonLogger],
     }),
     // MongooseModule.forRootAsync({
     //   imports: [ConfigModule],
