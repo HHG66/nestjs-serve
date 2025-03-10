@@ -35,6 +35,9 @@ export class BillService {
     let bills: CreateBillDto[] = []
     try {
       bills = requestBody.datas.map((data) => {
+        if (data.trasactionid == null) {
+          return
+        }
         const bill = new CreateBillDto();
         bill.tradinghours = new Date(data.tradinghours);
         bill.tradetype = data.tradetype;
@@ -57,10 +60,11 @@ export class BillService {
         bill.tradingStatus = data.tradingStatus
         bill.successfulRefund = data.successfulRefund
         bill.fundStatus = data.fundStatus
+
         return bill;
       });
     } catch (error) {
-      console.log(error);
+      this.logger.error('请导入正确格式的帐单:' + error)
       return ResponseDto.failureWithAutoTip('请导入正确格式的帐单')
     }
 
@@ -177,7 +181,14 @@ export class BillService {
 
     return ResponseDto.success(dailyStatementList);
   }
+  async getBillBatch(query) {
+    //查询批次账单
+    let result = await this.billingBatchModel.find(query).lean();
+    return ResponseDto.success(result, {
+      page: query.page, pageSize: query.pageSize, total: result.length,
+    });
 
+  }
   //创建批次账单
   private async createBatchBill(billType, businesstotal, billidList) {
     this.billingBatchModel.create({

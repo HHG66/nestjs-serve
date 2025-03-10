@@ -17,7 +17,7 @@ export class LoginController {
   @Post('login')
   @Public()
   async login(@Body() userInfo: CreateUserDto) {
-    console.log(userInfo);
+    // console.log(userInfo);
     return this.loginService.login(userInfo);
   }
 

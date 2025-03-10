@@ -11,34 +11,39 @@ import {
 import { BillService } from './bill.service';
 import { CreateBillDto, CreateBillListDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
-import { QueryBillDto, QueryDateDto, QueryDateRangeDto } from './dto/query-bill.dto';
+import { QueryBatchDto, QueryBillDto, QueryDateDto, QueryDateRangeDto } from './dto/query-bill.dto';
 
 @Controller('bill')
 export class BillController {
-  constructor(private readonly billService: BillService) {}
+  constructor(private readonly billService: BillService) { }
 
   @Post('importingbills')
   create(@Body() createBillDto: CreateBillListDto) {
     return this.billService.uploadBill(createBillDto);
   }
- @Get('getdisposebill')
- getdisposebill(@Query() query: QueryBillDto) {
+  @Get('getdisposebill')
+  getdisposebill(@Query() query: QueryBillDto) {
     // console.log(query)
     return this.billService.getdisposebill(query);
   }
 
   @Get('getPeriodTimebill')
   getPeriodTimebill(@Query() query: QueryDateRangeDto) {
-     console.log(query)
-     return this.billService.getPeriodTimebill(query);
-   }
+    console.log(query)
+    return this.billService.getPeriodTimebill(query);
+  }
 
-   @Get('getBalancePayments')
-   getBalancePayments(@Query() query: QueryDateDto) {
-      // console.log(query)
-      return this.billService.getBalancePayments(query.date);
-    }
-   
+  @Get('getBalancePayments')
+  getBalancePayments(@Query() query: QueryDateDto) {
+    // console.log(query)
+    return this.billService.getBalancePayments(query.date);
+  }
+
+  @Get('getBillBatch')
+  getBillBatch(@Query() query: QueryBatchDto) {
+    return this.billService.getBillBatch(query);
+  }
+
   
   // @Post('')
   // create(@Body() createBillDto: CreateBillDto) {

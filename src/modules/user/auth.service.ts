@@ -1,7 +1,7 @@
 /*
  * @Author: HHG
  * @Date: 2024-08-23 17:39:11
- * @LastEditTime: 2024-08-27 20:18:59
+ * @LastEditTime: 2025-03-10 15:27:23
  * @LastEditors: 韩宏广
  * @FilePath: \financial-serve\src\modules\user\auth.service.ts
  * @文件说明:
@@ -27,8 +27,8 @@ export class AuthService {
     if (user) {
       // const Password = user.password;
       //明文密码
-      console.log('password', password);
-      console.log('user.password', user.password);
+      // console.log('password', password);
+      // console.log('user.password', user.password);
       if (compare(password, user.password)) {
         // 密码正确
         return {

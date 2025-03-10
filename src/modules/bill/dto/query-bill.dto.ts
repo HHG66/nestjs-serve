@@ -1,4 +1,5 @@
 import { IsString, IsNotEmpty } from 'class-validator';
+import exp from 'constants';
 
 export class QueryBillDto {
   // @IsNotEmpty({message:"导入时间不能为空"})
@@ -12,9 +13,6 @@ export class QueryBillDto {
   tradinghours:string
 
 }
-
-
-  
 
 export class QueryDateRangeDto {
   // @IsNotEmpty({message:"日期范围不能为空"})
@@ -33,5 +31,11 @@ export class QueryDateDto {
   })
   date:string
 
+}
+
+export class QueryBatchDto {
+  //导入时间
+  // @IsString()
+  // importTime: string;
 }
 

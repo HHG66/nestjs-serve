@@ -29,28 +29,27 @@ import { loggingStatic } from './global/logger/loggingStatic.service';
     //数据库配置
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService,CustomWinstonLogger:CustomWinstonLogger) => {
+      useFactory: async (configService: ConfigService, CustomWinstonLogger: CustomWinstonLogger) => {
         const Logger = new loggingStatic(CustomWinstonLogger);
         const uri = configService.get<string>('MONGODB_URI');
         const serverSelectionTimeoutMS = configService.get<number>('serverSelectionTimeoutMS');
-       try {
+        try {
           // 尝试连接 MongoDB
-          await mongoose.connect(uri, { serverSelectionTimeoutMS });
- 
+          let mongooseConnect = await mongoose.connect(uri, { serverSelectionTimeoutMS });
           // 确保连接对象可用
-          mongoose.connection.on('error', (err) => {
+          mongooseConnect.connection.on('error', (err) => {
             Logger.error(`MongoDB connection error: ${err.message}`, err.stack);
           });
- 
-          mongoose.connection.on('disconnected', () => {
-            Logger.warn('MongoDB disconnected');
+
+          mongooseConnect.connection.on('disconnected', () => {
+            Logger.warn('MongoDB disconnected:MongoDB数据库连接中断');
           });
- 
-          mongoose.connection.on('connected', () => {
+
+          mongooseConnect.connection.on('connected', () => {
             Logger.log('MongoDB connected successfully');
           });
- 
-          mongoose.connection.on('reconnected', () => {
+
+          mongooseConnect.connection.on('reconnected', () => {
             Logger.log('MongoDB reconnected');
           });
         } catch (error) {
@@ -60,13 +59,13 @@ import { loggingStatic } from './global/logger/loggingStatic.service';
         // mongoose.connection.on('disconnected', () => {
         //   Logger.warn('MongoDB disconnected');
         // });
-    
+
         return {
           uri,
           serverSelectionTimeoutMS
         };
       },
-      inject: [ConfigService,CustomWinstonLogger],
+      inject: [ConfigService, CustomWinstonLogger],
     }),
     // MongooseModule.forRootAsync({
     //   imports: [ConfigModule],
