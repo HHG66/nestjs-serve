@@ -53,7 +53,7 @@ import { loggingStatic } from './global/logger/loggingStatic.service';
             Logger.log('MongoDB reconnected');
           });
         } catch (error) {
-          Logger.error(`MongoDB connection error:请检查数据配置信息 ${error.message}`, error.stack);
+          Logger.error(`MongoDB connection error:请检查数据库配置信息 ${error.message}`, error.stack);
           throw error; // 抛出错误以便上层捕获
         }
         // mongoose.connection.on('disconnected', () => {

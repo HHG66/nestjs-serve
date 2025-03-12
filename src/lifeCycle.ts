@@ -28,7 +28,7 @@ export class LifeCycle
   }
 
   onModuleDestroy() {
-    console.log(`The LoggingService is being destroyed.`);
+    console.log(`The Serve is being destroyed.`);
   }
 
   onApplicationBootstrap() {
